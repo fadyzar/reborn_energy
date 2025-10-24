@@ -473,3 +473,64 @@ export const User = {
     return coach;
   }
 };
+
+export const WaterLog = {
+  ...createEntity('water_logs'),
+
+  getTodayTotal: async (userId) => {
+    const today = new Date().toISOString().split('T')[0];
+    const { data, error } = await supabase
+      .from('water_logs')
+      .select('amount_ml')
+      .eq('user_id', userId)
+      .eq('date', today);
+
+    if (error) throw error;
+    const total = data?.reduce((sum, log) => sum + log.amount_ml, 0) || 0;
+    return total;
+  },
+
+  getDateRange: async (userId, startDate, endDate) => {
+    const { data, error } = await supabase
+      .from('water_logs')
+      .select('*')
+      .eq('user_id', userId)
+      .gte('date', startDate)
+      .lte('date', endDate)
+      .order('date', { ascending: true });
+
+    if (error) throw error;
+    return data || [];
+  }
+};
+
+export const WaterGoal = {
+  ...createEntity('user_water_goals'),
+
+  getOrCreate: async (userId) => {
+    const { data, error } = await supabase
+      .from('user_water_goals')
+      .select('*')
+      .eq('user_id', userId)
+      .maybeSingle();
+
+    if (error) throw error;
+
+    if (!data) {
+      const { data: newGoal, error: createError } = await supabase
+        .from('user_water_goals')
+        .insert([{
+          user_id: userId,
+          daily_goal_ml: 2000,
+          reminder_enabled: false
+        }])
+        .select()
+        .single();
+
+      if (createError) throw createError;
+      return newGoal;
+    }
+
+    return data;
+  }
+};
