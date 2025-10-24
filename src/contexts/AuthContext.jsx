@@ -47,7 +47,6 @@ export const AuthProvider = ({ children }) => {
         setLoading(false);
       }
     } catch (error) {
-      console.error('Error checking user:', error);
       setLoading(false);
     }
   };
@@ -56,7 +55,6 @@ export const AuthProvider = ({ children }) => {
     try {
       const { data: { user } } = await supabase.auth.getUser();
       if (!user) {
-        console.error('No authenticated user found');
         setLoading(false);
         return;
       }
@@ -73,14 +71,11 @@ export const AuthProvider = ({ children }) => {
         .maybeSingle();
 
       if (error) {
-        console.error('Error creating profile:', error);
         setProfile(null);
       } else if (data) {
-        console.log('Profile created successfully:', data);
         setProfile(data);
       }
     } catch (error) {
-      console.error('Error in createProfileForUser:', error);
       setProfile(null);
     } finally {
       setLoading(false);
@@ -96,7 +91,6 @@ export const AuthProvider = ({ children }) => {
         .maybeSingle();
 
       if (error) {
-        console.error('Error fetching profile:', error);
         setProfile(null);
         setLoading(false);
         return;
@@ -106,11 +100,9 @@ export const AuthProvider = ({ children }) => {
         setProfile(data);
         setLoading(false);
       } else {
-        console.warn('No profile found for user:', userId);
         await createProfileForUser(userId);
       }
     } catch (error) {
-      console.error('Error fetching profile:', error);
       setProfile(null);
       setLoading(false);
     }
@@ -120,7 +112,6 @@ export const AuthProvider = ({ children }) => {
     try {
       const { data, error } = await auth.signUp(email, password, userData);
       if (error) {
-        console.error('Signup error:', error);
         return { data: null, error };
       }
 
@@ -131,7 +122,6 @@ export const AuthProvider = ({ children }) => {
 
       return { data, error: null };
     } catch (error) {
-      console.error('Signup error:', error);
       return { data: null, error };
     }
   };

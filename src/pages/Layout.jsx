@@ -388,29 +388,20 @@ export default function Layout({ children, currentPageName }) {
   const loadUser = async () => {
     try {
       let currentUser = profile;
-      console.log("[Layout] Current user loaded:", currentUser);
 
       const urlParams = new URLSearchParams(window.location.search);
       const coachIdFromUrl = urlParams.get('coach_id');
 
-      console.log("[Layout] Coach ID from URL:", coachIdFromUrl);
-      console.log("[Layout] Current user coach_id:", currentUser.coach_id);
-      console.log("[Layout] User role:", currentUser.role);
-
       if (coachIdFromUrl && currentUser.role !== 'coach' && currentUser.coach_id !== coachIdFromUrl) {
-        console.log("[Layout] Attempting to assign user to coach:", coachIdFromUrl);
-
         try {
           const { error } = await UserEntity.update(currentUser.id, {
             coach_id: coachIdFromUrl
           });
           if (error) throw error;
 
-          console.log("[Layout] User successfully assigned to coach");
           const { data: updatedUser } = await UserEntity.getById(currentUser.id);
           if (updatedUser) {
             currentUser = updatedUser;
-            console.log("[Layout] Updated user data:", currentUser);
           }
 
           try {
@@ -420,22 +411,18 @@ export default function Layout({ children, currentPageName }) {
               `${currentUser.full_name} הצטרף לקהילה שלך!`,
               "new_trainee"
             );
-            console.log("[Layout] Notification sent to coach");
           } catch (notificationError) {
-            console.error("[Layout] Error sending notification:", notificationError);
+            // Silent fail for notifications
           }
 
           window.history.replaceState({}, document.title, window.location.pathname);
-          console.log("[Layout] URL parameter removed");
-
         } catch (updateError) {
-          console.error("[Layout] Error updating user data:", updateError);
+          // Silent fail for user update
         }
       }
 
       setUser(currentUser);
     } catch (error) {
-      console.error("[Layout] Error in loadUser:", error);
       setUser(null);
     }
     setLoading(false);

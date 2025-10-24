@@ -6,7 +6,7 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Alert, AlertDescription } from '@/components/ui/alert';
-import { Loader2 } from 'lucide-react';
+import { Loader2, Target } from 'lucide-react';
 
 export default function Login() {
   const navigate = useNavigate();
@@ -35,7 +35,6 @@ export default function Login() {
         navigate('/');
       }
     } catch (err) {
-      console.error('Login error:', err);
       setError('אירעה שגיאה בהתחברות. אנא נסה שוב.');
     } finally {
       setLoading(false);
@@ -52,7 +51,7 @@ export default function Login() {
       <Card className="w-full max-w-md glass-morphism shadow-2xl border-0 relative z-10">
         <CardHeader className="space-y-1 text-center pb-6">
           <div className="w-16 h-16 bg-gradient-to-br from-blue-500 via-blue-600 to-green-500 rounded-2xl flex items-center justify-center mx-auto mb-4 shadow-lg">
-            <Loader2 className="w-8 h-8 text-white" />
+            <Target className="w-8 h-8 text-white" />
           </div>
           <CardTitle className="text-3xl font-bold bg-gradient-to-l from-blue-600 to-green-600 bg-clip-text text-transparent">התחברות</CardTitle>
           <CardDescription className="text-base">
