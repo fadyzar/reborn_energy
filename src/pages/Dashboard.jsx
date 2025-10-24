@@ -339,50 +339,50 @@ export default function Dashboard() {
 
   if (!user) {
     return (
-      <div className="min-h-screen bg-gradient-to-br from-blue-600 via-blue-700 to-green-600 dark:from-slate-950 dark:via-slate-900 dark:to-slate-950 relative overflow-hidden transition-colors duration-300">
+      <div className="min-h-screen bg-gradient-to-br from-blue-600 via-blue-700 to-teal-600 dark:from-slate-950 dark:via-slate-900 dark:to-slate-950 relative overflow-hidden transition-colors duration-500 animate-slide-in">
         {/* Background Elements */}
         <div className="absolute inset-0">
-          <div className="absolute top-20 left-20 w-72 h-72 bg-blue-400/20 dark:bg-blue-500/10 rounded-full blur-3xl animate-pulse"></div>
-          <div className="absolute bottom-20 right-20 w-96 h-96 bg-green-400/20 dark:bg-green-500/10 rounded-full blur-3xl animate-pulse delay-1000"></div>
-          <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-64 h-64 bg-blue-300/20 dark:bg-blue-400/10 rounded-full blur-2xl animate-pulse delay-500"></div>
+          <div className="absolute top-20 left-20 w-96 h-96 bg-blue-400/30 dark:bg-blue-500/10 rounded-full blur-3xl animate-pulse"></div>
+          <div className="absolute bottom-20 right-20 w-[500px] h-[500px] bg-teal-400/30 dark:bg-teal-500/10 rounded-full blur-3xl animate-pulse" style={{animationDelay: '2s'}}></div>
+          <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-80 h-80 bg-cyan-300/25 dark:bg-cyan-400/10 rounded-full blur-3xl animate-pulse" style={{animationDelay: '1s'}}></div>
         </div>
 
         <div className="relative z-10 flex flex-col items-center justify-center min-h-screen p-8 text-center">
-          <div className="mb-8 relative">
-            <div className="w-32 h-32 bg-gradient-to-r from-white/20 to-white/10 backdrop-blur-sm rounded-3xl flex items-center justify-center shadow-2xl animate-bounce">
-              <Target className="w-16 h-16 text-white drop-shadow-lg" />
+          <div className="mb-10 relative animate-float">
+            <div className="w-36 h-36 bg-gradient-to-br from-white/30 to-white/10 backdrop-blur-md rounded-4xl flex items-center justify-center shadow-2xl border-4 border-white/30">
+              <Target className="w-20 h-20 text-white drop-shadow-2xl" />
             </div>
-            <div className="absolute -top-2 -right-2 w-8 h-8 bg-yellow-400 rounded-full flex items-center justify-center animate-pulse">
-              <Zap className="w-4 h-4 text-yellow-800" />
+            <div className="absolute -top-3 -right-3 w-12 h-12 bg-gradient-to-br from-yellow-400 to-orange-400 rounded-full flex items-center justify-center animate-pulse shadow-xl border-3 border-white">
+              <Zap className="w-6 h-6 text-white drop-shadow-lg" />
             </div>
           </div>
 
           <div className="max-w-4xl mx-auto space-y-6">
-            <h1 className="text-5xl md:text-7xl font-bold text-white mb-6 leading-tight">
-              <span className="bg-gradient-to-r from-white to-blue-100 bg-clip-text text-transparent">
+            <h1 className="text-5xl md:text-7xl lg:text-8xl font-black text-white mb-8 leading-tight">
+              <span className="bg-gradient-to-r from-white via-blue-100 to-cyan-100 bg-clip-text text-transparent drop-shadow-2xl">
                 ברוכים הבאים ל-
               </span>
               <br />
-              <span className="bg-gradient-to-r from-yellow-200 to-orange-200 bg-clip-text text-transparent">
+              <span className="bg-gradient-to-r from-yellow-200 via-orange-200 to-pink-200 bg-clip-text text-transparent drop-shadow-2xl">
                 Reborn Energy
               </span>
             </h1>
 
-            <p className="text-xl md:text-2xl text-blue-100 mb-8 leading-relaxed">
+            <p className="text-xl md:text-3xl text-blue-100 mb-10 leading-relaxed font-semibold drop-shadow-lg">
               המערכת החכמה ביותר למעקב תזונה והשגת יעדים
             </p>
 
-            <div className="flex flex-wrap justify-center gap-4 mb-12 text-white/80">
-              <div className="flex items-center gap-2">
-                <Activity className="w-5 h-5" />
+            <div className="flex flex-wrap justify-center gap-6 mb-14 text-white/90 font-semibold text-lg">
+              <div className="flex items-center gap-3 bg-white/10 backdrop-blur-sm px-6 py-3 rounded-2xl hover:bg-white/20 transition-all duration-300 hover:scale-105 shadow-lg">
+                <Activity className="w-6 h-6" />
                 <span>מעקב חכם</span>
               </div>
-              <div className="flex items-center gap-2">
-                <Users className="w-5 h-5" />
+              <div className="flex items-center gap-3 bg-white/10 backdrop-blur-sm px-6 py-3 rounded-2xl hover:bg-white/20 transition-all duration-300 hover:scale-105 shadow-lg">
+                <Users className="w-6 h-6" />
                 <span>ליווי מקצועי</span>
               </div>
-              <div className="flex items-center gap-2">
-                <Award className="w-5 h-5" />
+              <div className="flex items-center gap-3 bg-white/10 backdrop-blur-sm px-6 py-3 rounded-2xl hover:bg-white/20 transition-all duration-300 hover:scale-105 shadow-lg">
+                <Award className="w-6 h-6" />
                 <span>תוצאות מוכחות</span>
               </div>
             </div>
@@ -390,11 +390,11 @@ export default function Dashboard() {
             <div className="flex flex-col sm:flex-row gap-4 justify-center">
               <Button
                 onClick={() => User.login()}
-                className="bg-gradient-to-r from-orange-400 to-pink-500 hover:from-orange-500 hover:to-pink-600 text-white px-12 py-4 rounded-2xl font-bold text-xl shadow-2xl hover:shadow-3xl transition-all duration-300 transform hover:scale-105 border-0"
+                className="bg-gradient-to-r from-orange-400 via-pink-500 to-rose-500 hover:from-orange-500 hover:via-pink-600 hover:to-rose-600 text-white px-16 py-7 rounded-3xl font-black text-2xl shadow-2xl hover:shadow-3xl transition-all duration-500 transform hover:scale-110 border-0 animate-pulse-slow"
               >
-                <span className="flex items-center gap-3">
+                <span className="flex items-center gap-4">
                   התחבר עם גוגל
-                  <ChevronRight className="w-6 h-6" />
+                  <ChevronRight className="w-7 h-7" />
                 </span>
               </Button>
 
@@ -415,7 +415,7 @@ export default function Dashboard() {
   const isCoach = user.is_coach || user.role === 'admin';
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-blue-50 via-white to-green-50 dark:from-slate-950 dark:via-slate-900 dark:to-slate-950 relative overflow-hidden transition-colors duration-300">
+    <div className="min-h-screen bg-gradient-to-br from-slate-50 via-blue-50/30 to-teal-50/40 dark:from-slate-950 dark:via-slate-900 dark:to-slate-950 relative overflow-hidden transition-colors duration-500 animate-slide-in">
       {businessSettings && businessSettings.primary_color && businessSettings.secondary_color && (
         <style>{`
           :root {
@@ -432,9 +432,9 @@ export default function Dashboard() {
       />
 
       <div className="fixed inset-0 pointer-events-none overflow-hidden">
-        <div className="absolute -top-24 -right-24 w-96 h-96 bg-gradient-to-br from-blue-400/20 dark:from-blue-500/10 via-blue-300/10 dark:via-blue-400/5 to-transparent rounded-full blur-3xl animate-float"></div>
-        <div className="absolute -bottom-24 -left-24 w-96 h-96 bg-gradient-to-tr from-green-400/20 dark:from-green-500/10 via-green-300/10 dark:via-green-400/5 to-transparent rounded-full blur-3xl animate-float" style={{ animationDelay: '1s' }}></div>
-        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] bg-gradient-to-br from-blue-200/10 dark:from-blue-400/5 via-transparent to-green-200/10 dark:to-green-400/5 rounded-full blur-3xl"></div>
+        <div className="absolute -top-24 -right-24 w-[500px] h-[500px] bg-gradient-to-br from-blue-400/25 dark:from-blue-500/10 via-blue-300/15 dark:via-blue-400/5 to-transparent rounded-full blur-3xl animate-float"></div>
+        <div className="absolute -bottom-24 -left-24 w-[500px] h-[500px] bg-gradient-to-tr from-teal-400/25 dark:from-teal-500/10 via-teal-300/15 dark:via-teal-400/5 to-transparent rounded-full blur-3xl animate-float" style={{ animationDelay: '2s' }}></div>
+        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[700px] h-[700px] bg-gradient-to-br from-cyan-200/15 dark:from-cyan-400/5 via-transparent to-blue-200/15 dark:to-blue-400/5 rounded-full blur-3xl"></div>
       </div>
 
       <div className="relative z-10 p-4 sm:p-6 lg:p-12">
@@ -447,15 +447,15 @@ export default function Dashboard() {
               {businessSettings?.logo_url ? (
                 <img src={businessSettings.logo_url} alt="Business Logo" className="h-20 sm:h-24 mx-auto drop-shadow-2xl" />
               ) : (
-                <div className="inline-flex items-center justify-center w-20 h-20 sm:w-24 sm:h-24 bg-gradient-to-br from-blue-500 via-blue-600 to-green-500 rounded-3xl shadow-2xl animate-float relative">
-                  <div className="absolute inset-0 bg-gradient-to-br from-blue-400 to-green-400 rounded-3xl blur-xl opacity-50"></div>
-                  <Target className="w-10 h-10 sm:w-12 sm:h-12 text-white relative z-10" />
+                <div className="inline-flex items-center justify-center w-24 h-24 sm:w-28 sm:h-28 bg-gradient-to-br from-blue-500 via-blue-600 to-teal-500 rounded-4xl shadow-2xl animate-float relative border-4 border-white/30">
+                  <div className="absolute inset-0 bg-gradient-to-br from-blue-400 to-teal-400 rounded-4xl blur-2xl opacity-60"></div>
+                  <Target className="w-12 h-12 sm:w-14 sm:h-14 text-white relative z-10 drop-shadow-xl" />
                 </div>
               )}
             </div>
 
-            <h1 className="text-3xl sm:text-5xl md:text-6xl font-black mb-4 px-2 leading-tight">
-              <span className="bg-gradient-to-l from-blue-600 via-blue-700 to-green-600 bg-clip-text text-transparent block drop-shadow-sm">
+            <h1 className="text-3xl sm:text-5xl md:text-6xl lg:text-7xl font-black mb-4 px-2 leading-tight animate-slide-in">
+              <span className="bg-gradient-to-l from-blue-600 via-blue-700 to-teal-600 bg-clip-text text-transparent block drop-shadow-lg">
                 {`שלום, ${user.hebrew_name || user.full_name || 'משתמש'}!`}
               </span>
               {businessSettings?.welcome_title && (
@@ -470,11 +470,11 @@ export default function Dashboard() {
             )}
 
             <div className="flex flex-col sm:flex-row items-center justify-center gap-3 mt-6">
-              <Badge className={`${isCoach ? 'bg-gradient-to-r from-purple-500 via-pink-500 to-purple-600' : 'bg-gradient-to-r from-blue-500 via-blue-600 to-green-500'} text-white border-0 px-5 py-3 text-base sm:text-lg font-bold shadow-lg hover:scale-105 transition-transform duration-300 rounded-full`}>
+              <Badge className={`${isCoach ? 'bg-gradient-to-r from-purple-500 via-pink-500 to-purple-600' : 'bg-gradient-to-r from-blue-500 via-blue-600 to-teal-500'} text-white border-0 px-6 py-3.5 text-base sm:text-lg font-black shadow-xl hover:scale-110 transition-all duration-400 rounded-full animate-pulse-slow`}>
                 {isCoach ? '🏆 מאמן מוסמך' : '💪 מתאמן פעיל'}
               </Badge>
             </div>
-            <p className="text-gray-500 text-sm sm:text-base px-4 mt-4 font-medium">
+            <p className="text-gray-500 dark:text-gray-400 text-sm sm:text-base px-4 mt-4 font-semibold">
               {format(new Date(), "EEEE, dd MMMM yyyy", { locale: he })}
             </p>
           </div>
@@ -483,46 +483,46 @@ export default function Dashboard() {
             /* Coach Dashboard - Mobile First */
             <div className="space-y-6 sm:space-y-8">
               <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-6">
-                <Card className="bg-gradient-to-br from-blue-500 via-blue-600 to-blue-700 border-0 shadow-2xl hover:shadow-3xl hover:scale-105 transition-all duration-300 group relative overflow-hidden">
-                  <div className="absolute inset-0 bg-gradient-to-br from-blue-400 to-blue-600 opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
+                <Card className="bg-gradient-to-br from-blue-500 via-blue-600 to-blue-700 border-0 shadow-2xl hover:shadow-3xl hover:scale-110 transition-all duration-500 group relative overflow-hidden animate-scale-in">
+                  <div className="absolute inset-0 bg-gradient-to-br from-blue-400 to-blue-600 opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
                   <CardContent className="p-4 sm:p-6 text-white relative z-10">
                     <div className="flex flex-col items-center gap-3">
-                      <div className="w-14 h-14 sm:w-16 sm:h-16 bg-white/20 backdrop-blur-sm rounded-2xl flex items-center justify-center group-hover:scale-110 transition-transform duration-300">
-                        <Users className="w-7 h-7 sm:w-9 sm:h-9 text-white" />
+                      <div className="w-16 h-16 sm:w-20 sm:h-20 bg-white/30 backdrop-blur-md rounded-3xl flex items-center justify-center group-hover:scale-125 group-hover:rotate-12 transition-all duration-500 shadow-xl">
+                        <Users className="w-8 h-8 sm:w-10 sm:h-10 text-white drop-shadow-lg" />
                       </div>
                       <div className="text-center">
-                        <div className="text-3xl sm:text-4xl font-black mb-1">{traineesData.total}</div>
-                        <div className="text-blue-100 text-xs sm:text-sm font-semibold">סה"כ מתאמנים</div>
+                        <div className="text-4xl sm:text-5xl font-black mb-2 drop-shadow-lg">{traineesData.total}</div>
+                        <div className="text-blue-100 text-xs sm:text-sm font-bold drop-shadow-md">סה"כ מתאמנים</div>
                       </div>
                     </div>
                   </CardContent>
                 </Card>
 
-                <Card className="bg-gradient-to-br from-green-500 via-green-600 to-emerald-600 border-0 shadow-2xl hover:shadow-3xl hover:scale-105 transition-all duration-300 group relative overflow-hidden">
-                  <div className="absolute inset-0 bg-gradient-to-br from-green-400 to-emerald-600 opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
+                <Card className="bg-gradient-to-br from-teal-500 via-teal-600 to-emerald-600 border-0 shadow-2xl hover:shadow-3xl hover:scale-110 transition-all duration-500 group relative overflow-hidden animate-scale-in" style={{animationDelay: '0.1s'}}>
+                  <div className="absolute inset-0 bg-gradient-to-br from-teal-400 to-emerald-600 opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
                   <CardContent className="p-4 sm:p-6 text-white relative z-10">
                     <div className="flex flex-col items-center gap-3">
-                      <div className="w-14 h-14 sm:w-16 sm:h-16 bg-white/20 backdrop-blur-sm rounded-2xl flex items-center justify-center group-hover:scale-110 transition-transform duration-300">
-                        <Activity className="w-7 h-7 sm:w-9 sm:h-9 text-white" />
+                      <div className="w-16 h-16 sm:w-20 sm:h-20 bg-white/30 backdrop-blur-md rounded-3xl flex items-center justify-center group-hover:scale-125 group-hover:rotate-12 transition-all duration-500 shadow-xl">
+                        <Activity className="w-8 h-8 sm:w-10 sm:h-10 text-white drop-shadow-lg" />
                       </div>
                       <div className="text-center">
-                        <div className="text-3xl sm:text-4xl font-black mb-1">{traineesData.active}</div>
-                        <div className="text-green-100 text-xs sm:text-sm font-semibold">פעילים היום</div>
+                        <div className="text-4xl sm:text-5xl font-black mb-2 drop-shadow-lg">{traineesData.active}</div>
+                        <div className="text-teal-100 text-xs sm:text-sm font-bold drop-shadow-md">פעילים היום</div>
                       </div>
                     </div>
                   </CardContent>
                 </Card>
 
-                <Card className="bg-gradient-to-br from-orange-500 via-orange-600 to-red-500 border-0 shadow-2xl hover:shadow-3xl hover:scale-105 transition-all duration-300 group relative overflow-hidden">
-                  <div className="absolute inset-0 bg-gradient-to-br from-orange-400 to-red-500 opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
+                <Card className="bg-gradient-to-br from-orange-500 via-orange-600 to-red-500 border-0 shadow-2xl hover:shadow-3xl hover:scale-110 transition-all duration-500 group relative overflow-hidden animate-scale-in" style={{animationDelay: '0.2s'}}>
+                  <div className="absolute inset-0 bg-gradient-to-br from-orange-400 to-red-500 opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
                   <CardContent className="p-4 sm:p-6 text-white relative z-10">
                     <div className="flex flex-col items-center gap-3">
-                      <div className="w-14 h-14 sm:w-16 sm:h-16 bg-white/20 backdrop-blur-sm rounded-2xl flex items-center justify-center group-hover:scale-110 transition-transform duration-300">
-                        <AlertTriangle className="w-7 h-7 sm:w-9 sm:h-9 text-white" />
+                      <div className="w-16 h-16 sm:w-20 sm:h-20 bg-white/30 backdrop-blur-md rounded-3xl flex items-center justify-center group-hover:scale-125 group-hover:rotate-12 transition-all duration-500 shadow-xl">
+                        <AlertTriangle className="w-8 h-8 sm:w-10 sm:h-10 text-white drop-shadow-lg" />
                       </div>
                       <div className="text-center">
-                        <div className="text-3xl sm:text-4xl font-black mb-1">{traineesData.needsAttention}</div>
-                        <div className="text-orange-100 text-xs sm:text-sm font-semibold">זקוקים לתשומת לב</div>
+                        <div className="text-4xl sm:text-5xl font-black mb-2 drop-shadow-lg">{traineesData.needsAttention}</div>
+                        <div className="text-orange-100 text-xs sm:text-sm font-bold drop-shadow-md">זקוקים לתשומת לב</div>
                       </div>
                     </div>
                   </CardContent>

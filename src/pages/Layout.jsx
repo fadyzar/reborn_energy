@@ -500,8 +500,10 @@ export default function Layout({ children, currentPageName }) {
   }
 
   return (
-    <div dir="rtl" className="min-h-screen bg-gradient-to-br from-blue-50 via-white to-green-50 dark:from-slate-950 dark:via-slate-900 dark:to-slate-950 relative overflow-hidden transition-colors duration-300">
-      <div className="fixed inset-0 bg-[url('data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNjAiIGhlaWdodD0iNjAiIHZpZXdCb3g9IjAgMCA2MCA2MCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48ZyBmaWxsPSJub25lIiBmaWxsLXJ1bGU9ImV2ZW5vZGQiPjxnIGZpbGw9IiMzYjgyZjYiIGZpbGwtb3BhY2l0eT0iMC4wMyI+PHBhdGggZD0iTTM2IDE0YzMuMzEgMCA2IDIuNjkgNiA2cy0yLjY5IDYtNiA2LTYtMi42OS02LTYgMi42OS02IDYtNnoiLz48L2c+PC9nPjwvc3ZnPg==')] opacity-40 dark:opacity-20"></div>
+    <div dir="rtl" className="min-h-screen bg-gradient-to-br from-slate-50 via-blue-50/30 to-teal-50/40 dark:from-slate-950 dark:via-slate-900 dark:to-slate-950 relative overflow-hidden transition-colors duration-500">
+      <div className="fixed inset-0 bg-[url('data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNjAiIGhlaWdodD0iNjAiIHZpZXdCb3g9IjAgMCA2MCA2MCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48ZyBmaWxsPSJub25lIiBmaWxsLXJ1bGU9ImV2ZW5vZGQiPjxnIGZpbGw9IiMzYjgyZjYiIGZpbGwtb3BhY2l0eT0iMC4wMyI+PHBhdGggZD0iTTM2IDE0YzMuMzEgMCA2IDIuNjkgNiA2cy0yLjY5IDYtNiA2LTYtMi42OS02LTYgMi42OS02IDYtNnoiLz48L2c+PC9nPjwvc3ZnPg==')] opacity-30 dark:opacity-20"></div>
+      <div className="fixed top-0 left-0 w-96 h-96 bg-blue-400/20 dark:bg-blue-500/10 rounded-full blur-3xl animate-pulse"></div>
+      <div className="fixed bottom-0 right-0 w-96 h-96 bg-teal-400/20 dark:bg-teal-500/10 rounded-full blur-3xl animate-pulse" style={{animationDelay: '2s'}}></div>
 
       <style>{`
         @keyframes shimmer {
@@ -516,11 +518,17 @@ export default function Layout({ children, currentPageName }) {
         }
 
         .glass-effect {
-          background: rgba(255, 255, 255, 0.85);
-          backdrop-filter: blur(12px) saturate(180%);
-          -webkit-backdrop-filter: blur(12px) saturate(180%);
-          border: 1px solid rgba(255, 255, 255, 0.3);
-          box-shadow: 0 8px 32px rgba(31, 38, 135, 0.07);
+          background: rgba(255, 255, 255, 0.95);
+          backdrop-filter: blur(20px) saturate(200%);
+          -webkit-backdrop-filter: blur(20px) saturate(200%);
+          border: 1px solid rgba(255, 255, 255, 0.5);
+          box-shadow: 0 10px 40px rgba(0, 0, 0, 0.1), 0 4px 16px rgba(0, 0, 0, 0.05);
+        }
+
+        .dark .glass-effect {
+          background: rgba(30, 41, 59, 0.95);
+          border: 1px solid rgba(255, 255, 255, 0.1);
+          box-shadow: 0 10px 40px rgba(0, 0, 0, 0.5);
         }
 
         .sidebar-item {
@@ -546,21 +554,25 @@ export default function Layout({ children, currentPageName }) {
         }
 
         .sidebar-item:hover {
-          transform: translateX(-4px);
+          transform: translateX(-6px) scale(1.02);
+        }
+
+        .sidebar-icon-glow {
+          box-shadow: 0 4px 12px rgba(59, 130, 246, 0.3);
         }
       `}</style>
       
       <SidebarProvider>
         <div className="min-h-screen flex w-full">
-          <Sidebar side="right" className="border-l border-white/20 dark:border-slate-700/50 glass-effect relative z-10">
-            <SidebarHeader className="border-b border-blue-100/50 dark:border-slate-700/50 p-6 bg-gradient-to-b from-blue-50/50 dark:from-slate-800/50 to-transparent">
+          <Sidebar side="right" className="border-l-2 border-white/30 dark:border-slate-700/50 glass-effect relative z-10">
+            <SidebarHeader className="border-b-2 border-blue-100/60 dark:border-slate-700/50 p-6 bg-gradient-to-b from-blue-50/60 dark:from-slate-800/60 to-transparent backdrop-blur-sm">
               <Link to={createPageUrl("Dashboard")} className="flex items-center gap-3 group">
-                <div className="w-12 h-12 bg-gradient-to-br from-blue-500 via-blue-600 to-green-500 rounded-2xl flex items-center justify-center shadow-lg transform group-hover:scale-110 group-hover:rotate-3 transition-all duration-300">
+                <div className="w-14 h-14 bg-gradient-to-br from-blue-500 via-blue-600 to-teal-500 rounded-3xl flex items-center justify-center shadow-xl transform group-hover:scale-110 group-hover:rotate-6 transition-all duration-500 sidebar-icon-glow">
                   <Target className="w-7 h-7 text-white" />
                 </div>
                 <div>
-                  <h2 className="font-bold text-2xl bg-gradient-to-l from-blue-600 to-green-600 bg-clip-text text-transparent">Reborn Energy</h2>
-                  <p className="text-sm text-gray-600 font-medium">מעקב תזונה חכם</p>
+                  <h2 className="font-black text-2xl bg-gradient-to-l from-blue-600 via-blue-700 to-teal-600 bg-clip-text text-transparent">Reborn Energy</h2>
+                  <p className="text-sm text-gray-600 dark:text-gray-400 font-semibold">מעקב תזונה חכם</p>
                 </div>
               </Link>
             </SidebarHeader>
@@ -576,23 +588,23 @@ export default function Layout({ children, currentPageName }) {
                       <SidebarMenuItem key={item.title}>
                         <SidebarMenuButton
                           asChild
-                          className={`sidebar-item hover:bg-gradient-to-l hover:from-blue-50 hover:to-green-50 hover:text-blue-700 transition-all duration-300 rounded-2xl mb-2 group ${
-                            location.pathname === item.url ? 'bg-gradient-to-l from-blue-100 to-green-100 text-blue-700 shadow-md active' : ''
+                          className={`sidebar-item hover:bg-gradient-to-l hover:from-blue-50 hover:to-teal-50 hover:text-blue-700 transition-all duration-400 rounded-2xl mb-2 group ${
+                            location.pathname === item.url ? 'bg-gradient-to-l from-blue-100 to-teal-100 text-blue-700 shadow-lg active' : ''
                           }`}
                         >
                           <Link to={item.url} className="flex items-center gap-4 px-4 py-3.5 relative overflow-hidden">
-                            <div className={`w-10 h-10 rounded-xl flex items-center justify-center transition-all duration-300 ${
+                            <div className={`w-11 h-11 rounded-xl flex items-center justify-center transition-all duration-400 ${
                               location.pathname === item.url
-                                ? 'bg-gradient-to-br from-blue-500 to-green-500 shadow-lg'
-                                : 'bg-gray-100 group-hover:bg-gradient-to-br group-hover:from-blue-400 group-hover:to-green-400'
+                                ? 'bg-gradient-to-br from-blue-500 to-teal-500 shadow-xl sidebar-icon-glow'
+                                : 'bg-gray-100 dark:bg-slate-800 group-hover:bg-gradient-to-br group-hover:from-blue-400 group-hover:to-teal-400 group-hover:shadow-lg'
                             }`}>
                               <item.icon className={`w-5 h-5 transition-colors duration-300 ${
                                 location.pathname === item.url ? 'text-white' : 'text-gray-600 group-hover:text-white'
                               }`} />
                             </div>
-                            <span className="font-semibold text-[15px]">{item.title}</span>
+                            <span className="font-bold text-[15px]">{item.title}</span>
                             {location.pathname === item.url && (
-                              <div className="absolute left-0 top-1/2 -translate-y-1/2 w-1 h-8 bg-gradient-to-b from-blue-500 to-green-500 rounded-r-full"></div>
+                              <div className="absolute left-0 top-1/2 -translate-y-1/2 w-1.5 h-10 bg-gradient-to-b from-blue-500 to-teal-500 rounded-r-full shadow-md"></div>
                             )}
                           </Link>
                         </SidebarMenuButton>
@@ -603,14 +615,14 @@ export default function Layout({ children, currentPageName }) {
               </SidebarGroup>
             </SidebarContent>
 
-            <SidebarFooter className="border-t border-blue-100/50 dark:border-slate-700/50 p-4 bg-gradient-to-t from-blue-50/30 dark:from-slate-800/30 to-transparent">
+            <SidebarFooter className="border-t-2 border-blue-100/60 dark:border-slate-700/50 p-4 bg-gradient-to-t from-blue-50/40 dark:from-slate-800/40 to-transparent backdrop-blur-sm">
               {user && !isProPlan && !isAdmin && (
-                  <div className="mb-4 relative overflow-hidden rounded-2xl">
+                  <div className="mb-4 relative overflow-hidden rounded-2xl animate-pulse-slow">
                       <Link to={createPageUrl("UpgradePlan")}>
-                          <Button className="w-full bg-gradient-to-r from-yellow-400 via-orange-500 to-pink-500 text-white font-bold hover:scale-105 active:scale-95 transition-all duration-300 shadow-xl hover:shadow-2xl py-6 relative group overflow-hidden">
+                          <Button className="w-full bg-gradient-to-r from-yellow-400 via-orange-500 to-pink-500 text-white font-black hover:scale-105 active:scale-95 transition-all duration-400 shadow-2xl hover:shadow-3xl py-7 text-lg relative group overflow-hidden">
                               <div className="absolute inset-0 bg-gradient-to-r from-yellow-300 via-orange-400 to-pink-400 opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
-                              <Star className="w-5 h-5 ml-2 relative z-10 animate-pulse" />
-                              <span className="relative z-10 text-lg">שדרג ל-Pro</span>
+                              <Star className="w-6 h-6 ml-2 relative z-10 animate-spin" style={{animationDuration: '3s'}} />
+                              <span className="relative z-10 text-xl">שדרג ל-Pro</span>
                           </Button>
                       </Link>
                   </div>
@@ -619,7 +631,7 @@ export default function Layout({ children, currentPageName }) {
               {user && isProPlan && !isAdmin && (
                 <div className="mb-4">
                     <Link to={createPageUrl("UpgradePlan")}>
-                        <Button variant="outline" className="w-full border-2 border-blue-200 text-blue-700 hover:bg-blue-50 hover:border-blue-300 transition-all duration-300 font-semibold py-6 rounded-2xl">
+                        <Button variant="outline" className="w-full border-2 border-blue-200 dark:border-blue-800 text-blue-700 dark:text-blue-400 hover:bg-blue-50 dark:hover:bg-blue-950 hover:border-blue-400 transition-all duration-400 font-bold py-6 rounded-2xl shadow-md hover:shadow-lg">
                             <Settings className="w-4 h-4 ml-2" />
                             נהל מנוי
                         </Button>
@@ -629,18 +641,18 @@ export default function Layout({ children, currentPageName }) {
 
               {user ? (
                 <div className="space-y-3">
-                  <div className="bg-gradient-to-br from-blue-50 to-green-50 dark:from-slate-800 dark:to-slate-700 rounded-2xl p-4 border border-blue-100 dark:border-slate-600">
+                  <div className="bg-gradient-to-br from-blue-50 to-teal-50 dark:from-slate-800 dark:to-slate-700 rounded-2xl p-4 border-2 border-blue-100 dark:border-slate-600 shadow-md">
                     <div className="flex items-center gap-3 mb-3">
-                      <div className="w-12 h-12 bg-gradient-to-br from-blue-500 via-blue-600 to-green-500 rounded-full flex items-center justify-center shadow-lg ring-4 ring-blue-100">
+                      <div className="w-14 h-14 bg-gradient-to-br from-blue-500 via-blue-600 to-teal-500 rounded-full flex items-center justify-center shadow-xl ring-4 ring-blue-100 dark:ring-blue-900 sidebar-icon-glow">
                         <span className="text-white font-bold text-lg">
                           {user.hebrew_name?.[0] || user.full_name?.[0] || 'U'}
                         </span>
                       </div>
                       <div className="flex-1 min-w-0">
-                        <p className="font-bold text-gray-900 truncate">
+                        <p className="font-black text-gray-900 dark:text-white truncate">
                           {user.hebrew_name || user.full_name || 'משתמש'}
                         </p>
-                        <p className="text-xs text-gray-600 truncate font-medium">
+                        <p className="text-xs text-gray-600 dark:text-gray-400 truncate font-semibold">
                           {isAdmin ? '⭐ מנהל ראשי' : isCoach ? (isProPlan ? '👑 מאמן Pro' : '🎯 מאמן') : (isProPlan ? '💎 מתאמן Pro' : '💪 מתאמן')}
                         </p>
                       </div>
