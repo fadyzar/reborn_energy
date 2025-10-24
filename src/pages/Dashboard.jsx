@@ -15,7 +15,7 @@ import { he } from "date-fns/locale";
 
 import StatsCards from "../components/dashboard/StatsCards";
 import TodayProgress from "../components/dashboard/TodayProgress";
-import WeeklyChart from "../components/dashboard/WeeklyChart";
+import NutritionCharts from "../components/dashboard/NutritionCharts";
 import QuickActions from "../components/dashboard/QuickActions";
 import TrialTimer from "../components/trial/TrialTimer";
 import { createPageUrl } from "@/utils";
@@ -77,7 +77,8 @@ export default function Dashboard() {
   const navigate = useNavigate();
   const [user, setUser] = useState(null);
   const [businessSettings, setBusinessSettings] = useState(null); // State for business settings
-  const [todayStats, setTodayStats] = useState({ calories: 0, protein: 0, logs: 0 });
+  const [todayStats, setTodayStats] = useState({ calories: 0, protein: 0, carbs: 0, fat: 0, logs: 0 });
+  const [todayLogs, setTodayLogs] = useState([]);
   const [weeklyData, setWeeklyData] = useState([]);
   const [latestMetrics, setLatestMetrics] = useState(null);
   const [traineesData, setTraineesData] = useState({ total: 0, active: 0, needsAttention: 0, topPerformers: [] });
@@ -122,8 +123,11 @@ export default function Dashboard() {
     setTodayStats({
       calories: totals.calories,
       protein: totals.protein,
+      carbs: totals.carbs,
+      fat: totals.fat,
       logs: logs.length
     });
+    setTodayLogs(logs);
 
     const weeklyLogs = await NutritionLog.filter({
       user_id: currentUser.id
@@ -178,45 +182,124 @@ export default function Dashboard() {
   }, []);
 
   const loadCoachData = useCallback(async (currentUser) => {
-    // Fetch business settings for the coach themselves
-    if (currentUser.id) { // Coach's own ID
+    if (currentUser.id) {
         try {
             const settingsData = await BusinessSettings.filter({ coach_id: currentUser.id });
             if (settingsData.length > 0) {
                 setBusinessSettings(settingsData[0]);
             } else {
-                setBusinessSettings(null); // No specific settings found
+                setBusinessSettings(null);
             }
         } catch (error) {
             console.error("Could not load business settings for coach:", error);
-            setBusinessSettings(null); // Ensure it's null on error
+            setBusinessSettings(null);
         }
     } else {
-        setBusinessSettings(null); // No user ID, no settings
+        setBusinessSettings(null);
     }
 
-    // Dummy data for coach dashboard
-    setTraineesData({
-      total: 15,
-      active: 8,
-      needsAttention: 3,
-      topPerformers: [
-        { name: 'דניאל כהן', adherence: 95 },
-        { name: 'שרה לוי', adherence: 92 },
-        { name: 'משה ישראלי', adherence: 88 },
-      ],
-    });
-    setAlerts([
-      { trainee: 'דניאל כהן', message: 'חריגה משמעותית ביעד קלורי', type: 'calorie_exceed' },
-      { trainee: 'משה ישראלי', message: 'לא עדכן יומן תזונה יומיים', type: 'no_log' },
-    ]);
-    setRecentActivity([
-      { id: 1, trainee_name: 'רבקה שלום', food_name: 'ארוחת צהריים', calories: 600, created_date: new Date().toISOString() },
-      { id: 2, trainee_name: 'יוסי דויד', food_name: 'נשנוש ערב', calories: 250, created_date: subDays(new Date(), 0).toISOString() },
-      { id: 3, trainee_name: 'שירה כהן', food_name: 'ארוחת בוקר', calories: 400, created_date: subDays(new Date(), 1).toISOString() },
-    ]);
-    // Coaches might also have their own personal data, but for this example, we'll keep weeklyData empty or load default
-    setWeeklyData([]);
+    try {
+      let coachTrainees = [];
+      if (currentUser.role === 'admin') {
+        const allUsers = await User.getAll();
+        coachTrainees = allUsers.data?.filter(u => !u.is_coach && u.id !== currentUser.id) || [];
+      } else {
+        coachTrainees = await User.filter({ coach_id: currentUser.id });
+      }
+
+      const today = format(new Date(), 'yyyy-MM-dd');
+      const twoDaysAgo = format(subDays(new Date(), 2), 'yyyy-MM-dd');
+
+      let allTraineeLogs = [];
+      let allTraineeMetrics = [];
+
+      if (coachTrainees.length > 0) {
+        const logsPromises = coachTrainees.map(t => NutritionLog.filter({ user_id: t.id }, '-created_date', 100));
+        const logsResults = await Promise.all(logsPromises);
+        allTraineeLogs = logsResults.flat();
+
+        const metricsPromises = coachTrainees.map(t => BodyMetrics.filter({ user_id: t.id }, '-date', 10));
+        const metricsResults = await Promise.all(metricsPromises);
+        allTraineeMetrics = metricsResults.flat();
+      }
+
+      const todayLogs = allTraineeLogs.filter(log => log.date === today);
+      const activeToday = new Set(todayLogs.map(log => log.user_id)).size;
+
+      const last7Days = Array.from({ length: 7 }, (_, i) => format(subDays(new Date(), i), 'yyyy-MM-dd'));
+      const weekLogs = allTraineeLogs.filter(log => last7Days.includes(log.date));
+
+      const adherenceData = coachTrainees.map(trainee => {
+        const traineeLogs = weekLogs.filter(log => log.user_id === trainee.id);
+        const weeklyCalories = traineeLogs.reduce((sum, log) => sum + (log.calories || 0), 0);
+        const expectedCalories = (trainee.daily_calories_goal || 2000) * 7;
+        const adherence = expectedCalories > 0 ? (weeklyCalories / expectedCalories) * 100 : 0;
+
+        const lastLogDate = traineeLogs.length > 0
+          ? Math.max(...traineeLogs.map(l => new Date(l.created_date).getTime()))
+          : 0;
+        const needsAttention = lastLogDate < new Date(twoDaysAgo).getTime();
+
+        return { ...trainee, adherence, weeklyLogs: traineeLogs.length, needsAttention };
+      });
+
+      const topPerformers = adherenceData
+        .filter(t => t.adherence > 0)
+        .sort((a, b) => b.adherence - a.adherence)
+        .slice(0, 3)
+        .map(t => ({ name: t.hebrew_name || t.full_name || 'מתאמן', adherence: t.adherence }));
+
+      const needsAttentionCount = adherenceData.filter(t => t.needsAttention).length;
+
+      setTraineesData({
+        total: coachTrainees.length,
+        active: activeToday,
+        needsAttention: needsAttentionCount,
+        topPerformers: topPerformers,
+      });
+
+      const alerts = adherenceData
+        .filter(t => t.needsAttention)
+        .slice(0, 3)
+        .map(t => ({
+          trainee: t.hebrew_name || t.full_name || 'מתאמן',
+          message: 'לא עדכן יומן תזונה במשך יומיים',
+          type: 'no_log'
+        }));
+
+      const calorieAlerts = adherenceData
+        .filter(t => t.adherence > 120)
+        .slice(0, 2)
+        .map(t => ({
+          trainee: t.hebrew_name || t.full_name || 'מתאמן',
+          message: 'חריגה משמעותית ביעד קלורי',
+          type: 'calorie_exceed'
+        }));
+
+      setAlerts([...alerts, ...calorieAlerts]);
+
+      const recentActivity = todayLogs
+        .sort((a, b) => new Date(b.created_date) - new Date(a.created_date))
+        .slice(0, 5)
+        .map(log => {
+          const trainee = coachTrainees.find(t => t.id === log.user_id);
+          return {
+            id: log.id,
+            trainee_name: trainee?.hebrew_name || trainee?.full_name || 'מתאמן',
+            food_name: log.food_name || 'ארוחה',
+            calories: log.calories || 0,
+            created_date: log.created_date
+          };
+        });
+
+      setRecentActivity(recentActivity);
+      setWeeklyData([]);
+    } catch (error) {
+      console.error("Error loading coach data:", error);
+      setTraineesData({ total: 0, active: 0, needsAttention: 0, topPerformers: [] });
+      setAlerts([]);
+      setRecentActivity([]);
+    }
   }, []);
 
   const loadDashboardData = useCallback(async () => {
@@ -315,33 +398,8 @@ export default function Dashboard() {
                 </span>
               </Button>
 
-              <Button
-                onClick={() => {
-                  setUser({
-                    id: 'demo_coach_123',
-                    full_name: 'מאמן דמו',
-                    hebrew_name: 'מאמן דמו',
-                    email: 'demo@coach.com',
-                    is_coach: true,
-                    role: 'coach',
-                    daily_calories_goal: 2500,
-                    daily_protein_goal: 180,
-                  });
-                  setLoading(false);
-                }}
-                variant="outline"
-                className="bg-white/10 hover:bg-white/20 text-white border-white/30 px-12 py-4 rounded-2xl font-bold text-xl shadow-2xl hover:shadow-3xl transition-all duration-300 transform hover:scale-105 backdrop-blur-sm"
-              >
-                <span className="flex items-center gap-3">
-                  כניסה דמו - מאמן
-                  <Users className="w-6 h-6" />
-                </span>
-              </Button>
             </div>
 
-            <p className="text-sm text-blue-200 mt-6">
-              אם ההתחברות עם גוגל לא עובדת, השתמש במצב הדמו לבדיקה
-            </p>
           </div>
         </div>
 
@@ -665,71 +723,42 @@ export default function Dashboard() {
               {/* PlanRequestFlow component is removed from here */}
 
               <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 sm:gap-6">
-                <Card className="bg-gradient-to-br from-orange-500 via-red-500 to-pink-500 border-0 shadow-2xl hover:shadow-3xl hover:scale-105 transition-all duration-300 group relative overflow-hidden">
-                  <div className="absolute inset-0 bg-gradient-to-br from-orange-400 to-pink-500 opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
-                  <CardContent className="p-5 sm:p-7 text-white relative z-10">
-                    <div className="flex items-center justify-between mb-4">
-                      <div className="w-14 h-14 sm:w-16 sm:h-16 bg-white/20 backdrop-blur-sm rounded-2xl flex items-center justify-center group-hover:scale-110 transition-transform duration-300">
-                        <Target className="w-7 h-7 sm:w-9 sm:h-9 text-white" />
-                      </div>
-                      <div className="text-right">
-                        <div className="text-3xl sm:text-4xl font-black mb-1">{todayStats.calories}</div>
-                        <div className="text-orange-100 text-sm sm:text-base font-semibold">קלוריות היום</div>
-                      </div>
-                    </div>
-                    <div className="w-full bg-white/20 rounded-full h-3 shadow-inner overflow-hidden">
-                      <div
-                        className="bg-gradient-to-l from-white to-yellow-100 rounded-full h-3 transition-all duration-500 shadow-lg"
-                        style={{ width: `${Math.min((todayStats.calories / (user.daily_calories_goal || 2000)) * 100, 100)}%` }}
-                      ></div>
-                    </div>
-                  </CardContent>
-                </Card>
-
-                <Card className="bg-gradient-to-br from-green-500 via-emerald-500 to-teal-500 border-0 shadow-2xl hover:shadow-3xl hover:scale-105 transition-all duration-300 group relative overflow-hidden">
-                  <div className="absolute inset-0 bg-gradient-to-br from-green-400 to-teal-500 opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
-                  <CardContent className="p-5 sm:p-7 text-white relative z-10">
-                    <div className="flex items-center justify-between mb-4">
-                      <div className="w-14 h-14 sm:w-16 sm:h-16 bg-white/20 backdrop-blur-sm rounded-2xl flex items-center justify-center group-hover:scale-110 transition-transform duration-300">
-                        <TrendingUp className="w-7 h-7 sm:w-9 sm:h-9 text-white" />
-                      </div>
-                      <div className="text-right">
-                        <div className="text-3xl sm:text-4xl font-black mb-1">{todayStats.protein.toFixed(0)}</div>
-                        <div className="text-green-100 text-sm sm:text-base font-semibold">גרם חלבון</div>
-                      </div>
-                    </div>
-                    <div className="w-full bg-white/20 rounded-full h-3 shadow-inner overflow-hidden">
-                      <div
-                        className="bg-gradient-to-l from-white to-green-100 rounded-full h-3 transition-all duration-500 shadow-lg"
-                        style={{ width: `${Math.min((todayStats.protein / (user.daily_protein_goal || 150)) * 100, 100)}%` }}
-                      ></div>
-                    </div>
-                  </CardContent>
-                </Card>
-
-                <Card className="bg-gradient-to-br from-purple-500 via-blue-500 to-cyan-500 border-0 shadow-2xl hover:shadow-3xl hover:scale-105 transition-all duration-300 group relative overflow-hidden sm:col-span-1">
-                  <div className="absolute inset-0 bg-gradient-to-br from-purple-400 to-cyan-500 opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
-                  <CardContent className="p-5 sm:p-7 text-white relative z-10">
-                    <div className="flex items-center justify-between mb-4">
-                      <div className="w-14 h-14 sm:w-16 sm:h-16 bg-white/20 backdrop-blur-sm rounded-2xl flex items-center justify-center group-hover:scale-110 transition-transform duration-300">
-                        <Star className="w-7 h-7 sm:w-9 sm:h-9 text-white animate-pulse" />
-                      </div>
-                      <div className="text-right">
-                        <div className="text-3xl sm:text-4xl font-black mb-1">{weeklyProgress}%</div>
-                        <div className="text-purple-100 text-sm sm:text-base font-semibold">השבוע</div>
-                      </div>
-                    </div>
-                    <div className="w-full bg-white/20 rounded-full h-3 shadow-inner overflow-hidden">
-                      <div
-                        className="bg-gradient-to-l from-white to-purple-100 rounded-full h-3 transition-all duration-500 shadow-lg"
-                        style={{ width: `${weeklyProgress}%` }}
-                      ></div>
-                    </div>
-                  </CardContent>
-                </Card>
+                <StatsCards
+                  title="קלוריות היום"
+                  value={todayStats.calories}
+                  icon={Target}
+                  gradient="bg-gradient-to-br from-orange-500 via-red-500 to-pink-500"
+                  progress={(todayStats.calories / (user.daily_calories_goal || 2000)) * 100}
+                />
+                <StatsCards
+                  title="חלבון יומי"
+                  value={`${todayStats.protein.toFixed(0)}ג`}
+                  icon={TrendingUp}
+                  gradient="bg-gradient-to-br from-green-500 via-emerald-500 to-teal-500"
+                  progress={(todayStats.protein / (user.daily_protein_goal || 150)) * 100}
+                />
+                <StatsCards
+                  title="השבוע"
+                  value={`${weeklyProgress}%`}
+                  icon={Star}
+                  gradient="bg-gradient-to-br from-purple-500 via-blue-500 to-cyan-500"
+                  progress={weeklyProgress}
+                />
               </div>
 
-              {/* Action Cards - Mobile Optimized */}
+              <NutritionCharts weeklyData={weeklyData} user={user} />
+
+              <TodayProgress
+                todayTotals={todayStats}
+                goals={{
+                  calories: user.daily_calories_goal || 2000,
+                  protein: user.daily_protein_goal || 150,
+                  carbs: user.daily_carbs_goal || 200,
+                  fat: user.daily_fat_goal || 60,
+                }}
+                logs={todayLogs}
+              />
+
               <div className="grid gap-4 sm:gap-8">
                 {(!businessSettings || businessSettings.show_quick_actions) && (
                     <Card
@@ -753,30 +782,6 @@ export default function Dashboard() {
                         </div>
                       </CardContent>
                     </Card>
-                )}
-
-                {(!businessSettings || businessSettings.show_weekly_chart) && (
-                  <Card
-                    onClick={() => navigate(createPageUrl('Dashboard'))}
-                    className="group bg-white/80 backdrop-blur-sm border-0 shadow-xl hover:shadow-2xl transition-all duration-500 cursor-pointer transform hover:scale-105 overflow-hidden"
-                  >
-                    <div className="absolute inset-0 bg-gradient-to-br from-[var(--custom-primary,theme(colors.blue.500))]/5 to-[var(--custom-secondary,theme(colors.cyan.500))]/5 opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
-                    <CardContent className="p-4 sm:p-8 relative z-10">
-                      <div className="flex flex-col sm:flex-row items-center gap-4 sm:gap-6">
-                        <div className="w-12 h-12 sm:w-16 sm:h-16 bg-gradient-to-br from-[var(--custom-primary,theme(colors.blue.500))] to-[var(--custom-secondary,theme(colors.cyan.500))] rounded-xl sm:rounded-2xl flex items-center justify-center shadow-lg group-hover:scale-110 transition-transform duration-300">
-                          <BarChart3 className="w-6 h-6 sm:w-8 sm:h-8 text-white" />
-                        </div>
-                        <div className="flex-1 text-center sm:text-right">
-                          <h3 className="text-lg sm:text-2xl font-bold text-gray-800 mb-2">הדשבורד שלי</h3>
-                          <p className="text-gray-600 text-sm sm:text-base mb-4">צפה בהתקדמות היומית והיעדים שלך</p>
-                          <div className="flex items-center justify-center sm:justify-end text-[var(--custom-primary,theme(colors.blue.600))] font-medium">
-                            <span>פתח דשבורד</span>
-                            <ChevronRight className="w-5 h-5 mr-2 group-hover:translate-x-1 transition-transform" />
-                          </div>
-                        </div>
-                      </div>
-                    </CardContent>
-                  </Card>
                 )}
               </div>
 

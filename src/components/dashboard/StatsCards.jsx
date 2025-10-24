@@ -1,32 +1,65 @@
 import React from 'react';
-import { Card, CardHeader, CardTitle } from "@/components/ui/card";
+import { Card, CardContent } from "@/components/ui/card";
 import { Progress } from "@/components/ui/progress";
+import { motion } from "framer-motion";
 
-export default function StatsCards({ title, value, icon: Icon, bgColor, progress }) {
+export default function StatsCards({ title, value, icon: Icon, gradient, progress, trend }) {
   return (
-    <Card className="relative overflow-hidden bg-white/80 backdrop-blur-sm border-white/20 shadow-lg hover:shadow-xl transition-all duration-300">
-      <div className={`absolute top-0 left-0 w-32 h-32 transform -translate-x-8 -translate-y-8 ${bgColor} rounded-full opacity-10`} />
-      <CardHeader className="p-4 sm:p-6">
-        <div className="flex justify-between items-start mb-2 sm:mb-4">
-          <div>
-            <p className="text-xs sm:text-sm font-medium text-gray-500 mb-1">{title}</p>
-            <CardTitle className="text-xl sm:text-2xl font-bold">
-              {value}
-            </CardTitle>
+    <motion.div
+      initial={{ opacity: 0, y: 20 }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{ duration: 0.5 }}
+      whileHover={{ scale: 1.02, y: -4 }}
+      className="h-full"
+    >
+      <Card className={`relative h-full overflow-hidden border-0 shadow-2xl hover:shadow-3xl transition-all duration-500 group ${gradient}`}>
+        <div className="absolute inset-0 bg-gradient-to-br from-white/10 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
+
+        <div className="absolute top-0 right-0 w-32 h-32 transform translate-x-8 -translate-y-8 bg-white/10 rounded-full blur-2xl" />
+        <div className="absolute bottom-0 left-0 w-24 h-24 transform -translate-x-6 translate-y-6 bg-white/10 rounded-full blur-xl" />
+
+        <CardContent className="relative z-10 p-5 sm:p-7 text-white h-full flex flex-col justify-between">
+          <div className="flex items-start justify-between mb-4">
+            <div className="flex-1">
+              <p className="text-sm sm:text-base font-semibold text-white/80 mb-2">{title}</p>
+              <div className="flex items-baseline gap-2">
+                <p className="text-3xl sm:text-4xl lg:text-5xl font-black leading-none">
+                  {value}
+                </p>
+                {trend && (
+                  <span className={`text-xs sm:text-sm font-bold ${trend > 0 ? 'text-green-200' : 'text-red-200'}`}>
+                    {trend > 0 ? '+' : ''}{trend}%
+                  </span>
+                )}
+              </div>
+            </div>
+            <motion.div
+              whileHover={{ rotate: 360, scale: 1.1 }}
+              transition={{ duration: 0.6 }}
+              className="w-14 h-14 sm:w-16 sm:h-16 bg-white/20 backdrop-blur-sm rounded-2xl flex items-center justify-center shadow-xl group-hover:shadow-2xl transition-shadow duration-300"
+            >
+              <Icon className="w-7 h-7 sm:w-9 sm:h-9 text-white" />
+            </motion.div>
           </div>
-          <div className={`p-2 sm:p-3 rounded-lg sm:rounded-xl ${bgColor} bg-opacity-20`}>
-            <Icon className={`w-5 h-5 sm:w-6 sm:h-6 ${bgColor.replace('bg-', 'text-')}`} />
-          </div>
-        </div>
-        {progress !== undefined && (
-          <div className="space-y-1 sm:space-y-2">
-            <Progress value={Math.min(progress, 100)} className="h-1.5 sm:h-2" />
-            <p className="text-xs text-gray-500">
-              {progress.toFixed(0)}% מהיעד
-            </p>
-          </div>
-        )}
-      </CardHeader>
-    </Card>
+
+          {progress !== undefined && (
+            <div className="space-y-2">
+              <div className="flex items-center justify-between text-sm">
+                <span className="text-white/80 font-medium">התקדמות</span>
+                <span className="font-bold">{Math.min(progress, 100).toFixed(0)}%</span>
+              </div>
+              <div className="relative h-3 bg-white/20 rounded-full overflow-hidden shadow-inner">
+                <motion.div
+                  initial={{ width: 0 }}
+                  animate={{ width: `${Math.min(progress, 100)}%` }}
+                  transition={{ duration: 1, ease: "easeOut" }}
+                  className="absolute inset-y-0 left-0 bg-gradient-to-r from-white to-white/80 rounded-full shadow-lg"
+                />
+              </div>
+            </div>
+          )}
+        </CardContent>
+      </Card>
+    </motion.div>
   );
 }
