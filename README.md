@@ -1,6 +1,21 @@
-# מערכת ניהול אימונים ותזונה
+# מערכת ניהול אימונים ותזונה - Reborn Energy
 
-מערכת מקצועית לניהול מתאמנים, מעקב אימונים, תזונה ומדדי גוף. המערכת מיועדת למאמנים אישיים ומתאמנים.
+מערכת מקצועית ומודרנית לניהול מתאמנים, מעקב אימונים, תזונה ומדדי גוף. המערכת מיועדת למאמנים אישיים ומתאמנים עם עיצוב מתקדם ומצב כהה (Dark Mode) מלא.
+
+## תכונות עיקריות
+
+### 🌓 Dark Mode מלא
+- מעבר חלק בין מצב בהיר לכהה
+- תמיכה במצב אוטומטי לפי מערכת ההפעלה
+- כל המסכים מותאמים ל-Dark Mode
+- אנימציות ומעברים חלקים
+
+### עיצוב מודרני
+- ממשק משתמש אינטואיטיבי ונקי
+- אנימציות מתוחכמות עם Framer Motion
+- אפקטי Glass Morphism
+- Gradient backgrounds דינמיים
+- Responsive Design מלא לכל המסכים
 
 ## תכונות
 
@@ -25,12 +40,15 @@
 
 - **Frontend**: React 18 + Vite
 - **UI Components**: Radix UI + Tailwind CSS
+- **Theming**: next-themes (Dark Mode)
+- **Styling**: Custom CSS Variables + Dark Mode Support
 - **Routing**: React Router v7
 - **Database**: Supabase (PostgreSQL)
 - **Authentication**: Supabase Auth
 - **Charts**: Recharts
 - **Animations**: Framer Motion
 - **3D Graphics**: Three.js
+- **Fonts**: Inter, Assistant, Heebo
 
 ## התקנה
 
@@ -63,6 +81,13 @@ npm run build
 3. בחר סוג משתמש: מאמן או מתאמן
 4. מלא את הפרטים
 5. התחבר למערכת
+
+## שימוש ב-Dark Mode
+
+1. לחץ על כפתור ה-Theme Toggle בפינה העליונה של הדף
+2. בחר בין מצב בהיר, כהה או אוטומטי
+3. המערכת תשמור את ההעדפה שלך
+4. במצב אוטומטי, המערכת תתאים עצמה לפי הגדרות מערכת ההפעלה שלך
 
 ## מבנה הפרויקט
 

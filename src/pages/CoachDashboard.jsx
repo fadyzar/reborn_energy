@@ -208,12 +208,12 @@ export default function CoachDashboard() {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-gray-50 to-blue-50 p-4 sm:p-6">
+    <div className="min-h-screen bg-gradient-to-br from-gray-50 to-blue-50 dark:from-slate-950 dark:to-slate-900 p-4 sm:p-6 transition-colors duration-300">
       {/* Light Background Effects */}
       <div className="fixed inset-0 overflow-hidden pointer-events-none">
-        <div className="absolute -top-40 -right-40 w-80 h-80 bg-blue-200 rounded-full mix-blend-multiply filter blur-xl opacity-30 animate-pulse"></div>
-        <div className="absolute -bottom-40 -left-40 w-80 h-80 bg-purple-200 rounded-full mix-blend-multiply filter blur-xl opacity-30 animate-pulse delay-1000"></div>
-        <div className="absolute top-40 left-1/2 w-80 h-80 bg-pink-200 rounded-full mix-blend-multiply filter blur-xl opacity-30 animate-pulse delay-500"></div>
+        <div className="absolute -top-40 -right-40 w-80 h-80 bg-blue-200 dark:bg-blue-500/10 rounded-full mix-blend-multiply dark:mix-blend-normal filter blur-xl opacity-30 dark:opacity-50 animate-pulse"></div>
+        <div className="absolute -bottom-40 -left-40 w-80 h-80 bg-green-200 dark:bg-green-500/10 rounded-full mix-blend-multiply dark:mix-blend-normal filter blur-xl opacity-30 dark:opacity-50 animate-pulse delay-1000"></div>
+        <div className="absolute top-40 left-1/2 w-80 h-80 bg-cyan-200 dark:bg-cyan-500/10 rounded-full mix-blend-multiply dark:mix-blend-normal filter blur-xl opacity-30 dark:opacity-50 animate-pulse delay-500"></div>
       </div>
 
       <div className="relative z-10 max-w-7xl mx-auto">
@@ -222,13 +222,13 @@ export default function CoachDashboard() {
 
         {/* Hero Header */}
         <div className="text-center mb-8">
-          <div className="inline-flex items-center justify-center w-16 h-16 bg-gradient-to-r from-blue-500 to-purple-500 rounded-2xl mb-4 shadow-lg">
+          <div className="inline-flex items-center justify-center w-16 h-16 bg-gradient-to-r from-blue-500 to-green-500 rounded-2xl mb-4 shadow-lg">
             <Crown className="w-8 h-8 text-white" />
           </div>
-          <h1 className="text-3xl sm:text-4xl md:text-5xl font-bold text-gray-800 mb-2">
+          <h1 className="text-3xl sm:text-4xl md:text-5xl font-bold text-gray-800 dark:text-white mb-2">
             לוח מאמן מתקדם
           </h1>
-          <p className="text-gray-600 text-base sm:text-lg">
+          <p className="text-gray-600 dark:text-gray-400 text-base sm:text-lg">
             שלום {user?.hebrew_name || user?.full_name} | מעקב חכם אחר {realTimeStats.totalTrainees || 0} מתאמנים
           </p>
         </div>

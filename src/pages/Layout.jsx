@@ -4,6 +4,7 @@ import React, { useState, useEffect } from "react";
 import { Link, useLocation } from "react-router-dom";
 import { createPageUrl } from "@/utils";
 import { LayoutDashboard, Calendar, Target, Users, BarChart3, Scale, Home, LogOut, Star, Settings, Utensils, MessageSquare, Bell, Check, AlertTriangle, Trophy, DollarSign, PlusCircle, CheckCircle, User, Dumbbell, Brush } from "lucide-react";
+import { ThemeToggle } from "@/components/ui/theme-toggle";
 import {
   Sidebar,
   SidebarContent,
@@ -499,8 +500,8 @@ export default function Layout({ children, currentPageName }) {
   }
 
   return (
-    <div dir="rtl" className="min-h-screen bg-gradient-to-br from-blue-50 via-white to-green-50 relative overflow-hidden">
-      <div className="fixed inset-0 bg-[url('data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNjAiIGhlaWdodD0iNjAiIHZpZXdCb3g9IjAgMCA2MCA2MCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48ZyBmaWxsPSJub25lIiBmaWxsLXJ1bGU9ImV2ZW5vZGQiPjxnIGZpbGw9IiMzYjgyZjYiIGZpbGwtb3BhY2l0eT0iMC4wMyI+PHBhdGggZD0iTTM2IDE0YzMuMzEgMCA2IDIuNjkgNiA2cy0yLjY5IDYtNiA2LTYtMi42OS02LTYgMi42OS02IDYtNnoiLz48L2c+PC9nPjwvc3ZnPg==')] opacity-40"></div>
+    <div dir="rtl" className="min-h-screen bg-gradient-to-br from-blue-50 via-white to-green-50 dark:from-slate-950 dark:via-slate-900 dark:to-slate-950 relative overflow-hidden transition-colors duration-300">
+      <div className="fixed inset-0 bg-[url('data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNjAiIGhlaWdodD0iNjAiIHZpZXdCb3g9IjAgMCA2MCA2MCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48ZyBmaWxsPSJub25lIiBmaWxsLXJ1bGU9ImV2ZW5vZGQiPjxnIGZpbGw9IiMzYjgyZjYiIGZpbGwtb3BhY2l0eT0iMC4wMyI+PHBhdGggZD0iTTM2IDE0YzMuMzEgMCA2IDIuNjkgNiA2cy0yLjY5IDYtNiA2LTYtMi42OS02LTYgMi42OS02IDYtNnoiLz48L2c+PC9nPjwvc3ZnPg==')] opacity-40 dark:opacity-20"></div>
 
       <style>{`
         @keyframes shimmer {
@@ -551,8 +552,8 @@ export default function Layout({ children, currentPageName }) {
       
       <SidebarProvider>
         <div className="min-h-screen flex w-full">
-          <Sidebar side="right" className="border-l border-white/20 glass-effect relative z-10">
-            <SidebarHeader className="border-b border-blue-100/50 p-6 bg-gradient-to-b from-blue-50/50 to-transparent">
+          <Sidebar side="right" className="border-l border-white/20 dark:border-slate-700/50 glass-effect relative z-10">
+            <SidebarHeader className="border-b border-blue-100/50 dark:border-slate-700/50 p-6 bg-gradient-to-b from-blue-50/50 dark:from-slate-800/50 to-transparent">
               <Link to={createPageUrl("Dashboard")} className="flex items-center gap-3 group">
                 <div className="w-12 h-12 bg-gradient-to-br from-blue-500 via-blue-600 to-green-500 rounded-2xl flex items-center justify-center shadow-lg transform group-hover:scale-110 group-hover:rotate-3 transition-all duration-300">
                   <Target className="w-7 h-7 text-white" />
@@ -566,7 +567,7 @@ export default function Layout({ children, currentPageName }) {
             
             <SidebarContent className="p-3">
               <SidebarGroup>
-                <SidebarGroupLabel className="text-sm font-semibold text-gray-600 px-3 py-2">
+                <SidebarGroupLabel className="text-sm font-semibold text-gray-600 dark:text-gray-400 px-3 py-2">
                   תפריט ראשי
                 </SidebarGroupLabel>
                 <SidebarGroupContent>
@@ -602,7 +603,7 @@ export default function Layout({ children, currentPageName }) {
               </SidebarGroup>
             </SidebarContent>
 
-            <SidebarFooter className="border-t border-blue-100/50 p-4 bg-gradient-to-t from-blue-50/30 to-transparent">
+            <SidebarFooter className="border-t border-blue-100/50 dark:border-slate-700/50 p-4 bg-gradient-to-t from-blue-50/30 dark:from-slate-800/30 to-transparent">
               {user && !isProPlan && !isAdmin && (
                   <div className="mb-4 relative overflow-hidden rounded-2xl">
                       <Link to={createPageUrl("UpgradePlan")}>
@@ -628,7 +629,7 @@ export default function Layout({ children, currentPageName }) {
 
               {user ? (
                 <div className="space-y-3">
-                  <div className="bg-gradient-to-br from-blue-50 to-green-50 rounded-2xl p-4 border border-blue-100">
+                  <div className="bg-gradient-to-br from-blue-50 to-green-50 dark:from-slate-800 dark:to-slate-700 rounded-2xl p-4 border border-blue-100 dark:border-slate-600">
                     <div className="flex items-center gap-3 mb-3">
                       <div className="w-12 h-12 bg-gradient-to-br from-blue-500 via-blue-600 to-green-500 rounded-full flex items-center justify-center shadow-lg ring-4 ring-blue-100">
                         <span className="text-white font-bold text-lg">
@@ -646,14 +647,17 @@ export default function Layout({ children, currentPageName }) {
                       <NotificationBell user={user} />
                     </div>
                   </div>
-                  <Button
-                    onClick={handleLogout}
-                    variant="outline"
-                    className="w-full text-red-600 border-2 border-red-200 hover:bg-red-50 hover:border-red-300 transition-all duration-300 font-semibold py-3 rounded-xl"
-                  >
-                    <LogOut className="w-4 h-4 ml-2" />
-                    התנתקות
-                  </Button>
+                  <div className="flex gap-2">
+                    <Button
+                      onClick={handleLogout}
+                      variant="outline"
+                      className="flex-1 text-red-600 border-2 border-red-200 hover:bg-red-50 dark:hover:bg-red-950/20 hover:border-red-300 transition-all duration-300 font-semibold py-3 rounded-xl"
+                    >
+                      <LogOut className="w-4 h-4 ml-2" />
+                      התנתקות
+                    </Button>
+                    <ThemeToggle />
+                  </div>
                 </div>
               ) : (
                 <div className="text-center">
@@ -669,7 +673,7 @@ export default function Layout({ children, currentPageName }) {
           </Sidebar>
 
           <main className="flex-1 flex flex-col relative z-0">
-            <header className="glass-effect border-b border-white/30 px-4 sm:px-6 py-4 lg:hidden sticky top-0 z-50 backdrop-blur-xl">
+            <header className="glass-effect border-b border-white/30 dark:border-slate-700/50 px-4 sm:px-6 py-4 lg:hidden sticky top-0 z-50 backdrop-blur-xl">
               <div className="flex items-center justify-between">
                 <Link to={createPageUrl("Dashboard")} className="flex items-center gap-2 group">
                   <div className="w-10 h-10 bg-gradient-to-br from-blue-500 to-green-500 rounded-xl flex items-center justify-center shadow-lg group-hover:scale-110 transition-transform duration-300">
@@ -678,8 +682,9 @@ export default function Layout({ children, currentPageName }) {
                   <span className="text-xl font-bold bg-gradient-to-l from-blue-600 to-green-600 bg-clip-text text-transparent">Reborn Energy</span>
                 </Link>
                 <div className="flex items-center gap-2">
+                  <ThemeToggle />
                   {user && <NotificationBell user={user} />}
-                  <SidebarTrigger className="hover:bg-blue-50 p-2 rounded-xl transition-all duration-200 active:scale-95" />
+                  <SidebarTrigger className="hover:bg-blue-50 dark:hover:bg-slate-800 p-2 rounded-xl transition-all duration-200 active:scale-95" />
                 </div>
               </div>
             </header>

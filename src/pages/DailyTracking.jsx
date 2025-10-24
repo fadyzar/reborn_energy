@@ -154,26 +154,26 @@ export default function DailyTracking() {
   }
 
   return (
-    <div className="p-3 sm:p-4 lg:p-8 min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100">
+    <div className="p-3 sm:p-4 lg:p-8 min-h-screen bg-gradient-to-br from-blue-50 via-white to-green-50 dark:from-slate-950 dark:via-slate-900 dark:to-slate-950 transition-colors duration-300">
       <div className="max-w-7xl mx-auto">
         {/* Trial Timer */}
         {user && <TrialTimer user={user} />}
 
         {/* Header - Mobile Optimized */}
         <div className="text-center mb-6 sm:mb-8">
-          <h1 className="text-2xl sm:text-3xl font-bold text-gray-900 mb-2">מעקב תזונה יומי</h1>
-          <p className="text-sm sm:text-base text-gray-600">
+          <h1 className="text-2xl sm:text-3xl font-bold text-gray-900 dark:text-white mb-2">מעקב תזונה יומי</h1>
+          <p className="text-sm sm:text-base text-gray-600 dark:text-gray-400">
             {format(selectedDate, "EEEE, dd MMMM yyyy", { locale: he })}
           </p>
         </div>
 
         {/* Daily Stats - Mobile Grid */}
         <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4 mb-6 sm:mb-8">
-          <Card className="bg-white/80 backdrop-blur-sm shadow-lg">
+          <Card className="bg-white/80 dark:bg-slate-800/80 backdrop-blur-sm shadow-lg border-0 card-hover">
             <CardContent className="p-3 sm:p-4">
               <div className="flex items-center justify-between">
                 <div>
-                  <p className="text-gray-600 text-xs sm:text-sm">קלוריות</p>
+                  <p className="text-gray-600 dark:text-gray-400 text-xs sm:text-sm">קלוריות</p>
                   <p className="text-base sm:text-2xl font-bold text-blue-600">{dayTotals.calories}</p>
                 </div>
                 <Target className="w-5 h-5 sm:w-8 sm:h-8 text-blue-500" />
