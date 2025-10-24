@@ -357,8 +357,7 @@ export default function Dashboard() {
   const isCoach = user.is_coach || user.role === 'admin';
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-50 via-blue-50 to-indigo-100 relative overflow-hidden">
-      {/* Dynamic Style Injection */}
+    <div className="min-h-screen bg-gradient-to-br from-blue-50 via-white to-green-50 relative overflow-hidden">
       {businessSettings && businessSettings.primary_color && businessSettings.secondary_color && (
         <style>{`
           :root {
@@ -368,17 +367,16 @@ export default function Dashboard() {
         `}</style>
       )}
 
-      {/* Welcome Avatar for logged-in users */}
       <WelcomeAvatar
         user={user}
         onGetStarted={() => navigate(createPageUrl('Dashboard'))}
         onNavigate={(page) => navigate(createPageUrl(page))}
       />
 
-      {/* Background Elements */}
-      <div className="absolute inset-0 pointer-events-none">
-        <div className="absolute top-0 right-0 w-48 h-48 sm:w-96 sm:h-96 bg-gradient-to-br from-blue-200/30 to-purple-200/30 rounded-full blur-3xl"></div>
-        <div className="absolute bottom-0 left-0 w-40 h-40 sm:w-80 sm:h-80 bg-gradient-to-tr from-indigo-200/30 to-pink-200/30 rounded-full blur-3xl"></div>
+      <div className="fixed inset-0 pointer-events-none overflow-hidden">
+        <div className="absolute -top-24 -right-24 w-96 h-96 bg-gradient-to-br from-blue-400/20 via-blue-300/10 to-transparent rounded-full blur-3xl animate-float"></div>
+        <div className="absolute -bottom-24 -left-24 w-96 h-96 bg-gradient-to-tr from-green-400/20 via-green-300/10 to-transparent rounded-full blur-3xl animate-float" style={{ animationDelay: '1s' }}></div>
+        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] bg-gradient-to-br from-blue-200/10 via-transparent to-green-200/10 rounded-full blur-3xl"></div>
       </div>
 
       <div className="relative z-10 p-4 sm:p-6 lg:p-12">
@@ -386,37 +384,39 @@ export default function Dashboard() {
           {/* Trial Timer */}
           {user && <TrialTimer user={user} />}
 
-          {/* Welcome Header - Mobile Optimized */}
-          <div className="text-center mb-8 sm:mb-12">
-            {businessSettings?.logo_url ? (
-              <img src={businessSettings.logo_url} alt="Business Logo" className="h-16 sm:h-20 mx-auto mb-4" />
-            ) : (
-                <div className="inline-flex items-center justify-center w-16 h-16 sm:w-20 sm:h-20 bg-gradient-to-r from-[var(--custom-primary,theme(colors.blue.500))] to-[var(--custom-secondary,theme(colors.purple.600))] rounded-2xl shadow-xl mb-4 sm:mb-6 animate-pulse">
-                    <Target className="w-8 h-8 sm:w-10 sm:h-10 text-white" />
+          <div className="text-center mb-8 sm:mb-12 relative">
+            <div className="inline-block mb-6 relative">
+              {businessSettings?.logo_url ? (
+                <img src={businessSettings.logo_url} alt="Business Logo" className="h-20 sm:h-24 mx-auto drop-shadow-2xl" />
+              ) : (
+                <div className="inline-flex items-center justify-center w-20 h-20 sm:w-24 sm:h-24 bg-gradient-to-br from-blue-500 via-blue-600 to-green-500 rounded-3xl shadow-2xl animate-float relative">
+                  <div className="absolute inset-0 bg-gradient-to-br from-blue-400 to-green-400 rounded-3xl blur-xl opacity-50"></div>
+                  <Target className="w-10 h-10 sm:w-12 sm:h-12 text-white relative z-10" />
                 </div>
-            )}
+              )}
+            </div>
 
-            <h1 className="text-2xl sm:text-4xl md:text-5xl font-bold mb-4 px-2">
-              <span className="bg-gradient-to-r from-[var(--custom-primary,theme(colors.blue.600))] to-[var(--custom-secondary,theme(colors.purple.600))] bg-clip-text text-transparent block break-words">
+            <h1 className="text-3xl sm:text-5xl md:text-6xl font-black mb-4 px-2 leading-tight">
+              <span className="bg-gradient-to-l from-blue-600 via-blue-700 to-green-600 bg-clip-text text-transparent block drop-shadow-sm">
                 {`שלום, ${user.hebrew_name || user.full_name || 'משתמש'}!`}
               </span>
               {businessSettings?.welcome_title && (
-                <span className="bg-gradient-to-r from-gray-800 to-gray-600 bg-clip-text text-transparent block">
+                <span className="bg-gradient-to-r from-gray-700 to-gray-600 bg-clip-text text-transparent block text-2xl sm:text-3xl mt-2 font-bold">
                   {businessSettings.welcome_title}
                 </span>
               )}
             </h1>
-            
+
             {businessSettings?.welcome_subtitle && (
-                <p className="text-gray-600 text-lg mt-2">{businessSettings.welcome_subtitle}</p>
+              <p className="text-gray-600 text-lg sm:text-xl font-medium mt-3">{businessSettings.welcome_subtitle}</p>
             )}
 
-            <div className="flex flex-col sm:flex-row items-center justify-center gap-2 sm:gap-3 mb-2 mt-4">
-              <Badge className={`${isCoach ? 'bg-gradient-to-r from-purple-500 to-pink-500' : 'bg-gradient-to-r from-[var(--custom-primary,theme(colors.blue.500))] to-[var(--custom-secondary,theme(colors.cyan.500))]'} text-white border-0 px-3 py-2 text-sm sm:text-lg font-medium`}>
-                {isCoach ? '🏆 מאמן מוסמך' : '💪 מתאמן'}
+            <div className="flex flex-col sm:flex-row items-center justify-center gap-3 mt-6">
+              <Badge className={`${isCoach ? 'bg-gradient-to-r from-purple-500 via-pink-500 to-purple-600' : 'bg-gradient-to-r from-blue-500 via-blue-600 to-green-500'} text-white border-0 px-5 py-3 text-base sm:text-lg font-bold shadow-lg hover:scale-105 transition-transform duration-300 rounded-full`}>
+                {isCoach ? '🏆 מאמן מוסמך' : '💪 מתאמן פעיל'}
               </Badge>
             </div>
-            <p className="text-gray-600 text-base sm:text-lg px-4">
+            <p className="text-gray-500 text-sm sm:text-base px-4 mt-4 font-medium">
               {format(new Date(), "EEEE, dd MMMM yyyy", { locale: he })}
             </p>
           </div>
@@ -424,75 +424,86 @@ export default function Dashboard() {
           {isCoach ? (
             /* Coach Dashboard - Mobile First */
             <div className="space-y-6 sm:space-y-8">
-              {/* Stats Cards - Mobile Grid */}
               <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-6">
-                <Card className="bg-gradient-to-br from-blue-500 to-blue-600 border-0 shadow-xl hover:shadow-2xl transition-all duration-300">
-                  <CardContent className="p-3 sm:p-6 text-white">
-                    <div className="flex flex-col sm:flex-row items-center sm:justify-between gap-2">
-                      <Users className="w-8 h-8 sm:w-12 sm:h-12 text-blue-100 order-2 sm:order-1" />
-                      <div className="text-center sm:text-right order-1 sm:order-2">
-                        <div className="text-2xl sm:text-3xl font-bold">{traineesData.total}</div>
-                        <div className="text-blue-100 text-xs sm:text-sm">סה"כ מתאמנים</div>
+                <Card className="bg-gradient-to-br from-blue-500 via-blue-600 to-blue-700 border-0 shadow-2xl hover:shadow-3xl hover:scale-105 transition-all duration-300 group relative overflow-hidden">
+                  <div className="absolute inset-0 bg-gradient-to-br from-blue-400 to-blue-600 opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
+                  <CardContent className="p-4 sm:p-6 text-white relative z-10">
+                    <div className="flex flex-col items-center gap-3">
+                      <div className="w-14 h-14 sm:w-16 sm:h-16 bg-white/20 backdrop-blur-sm rounded-2xl flex items-center justify-center group-hover:scale-110 transition-transform duration-300">
+                        <Users className="w-7 h-7 sm:w-9 sm:h-9 text-white" />
+                      </div>
+                      <div className="text-center">
+                        <div className="text-3xl sm:text-4xl font-black mb-1">{traineesData.total}</div>
+                        <div className="text-blue-100 text-xs sm:text-sm font-semibold">סה"כ מתאמנים</div>
                       </div>
                     </div>
                   </CardContent>
                 </Card>
 
-                <Card className="bg-gradient-to-br from-green-500 to-green-600 border-0 shadow-xl hover:shadow-2xl transition-all duration-300">
-                  <CardContent className="p-3 sm:p-6 text-white">
-                    <div className="flex flex-col sm:flex-row items-center sm:justify-between gap-2">
-                      <Activity className="w-8 h-8 sm:w-12 sm:h-12 text-green-100 order-2 sm:order-1" />
-                      <div className="text-center sm:text-right order-1 sm:order-2">
-                        <div className="text-2xl sm:text-3xl font-bold">{traineesData.active}</div>
-                        <div className="text-green-100 text-xs sm:text-sm">פעילים היום</div>
+                <Card className="bg-gradient-to-br from-green-500 via-green-600 to-emerald-600 border-0 shadow-2xl hover:shadow-3xl hover:scale-105 transition-all duration-300 group relative overflow-hidden">
+                  <div className="absolute inset-0 bg-gradient-to-br from-green-400 to-emerald-600 opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
+                  <CardContent className="p-4 sm:p-6 text-white relative z-10">
+                    <div className="flex flex-col items-center gap-3">
+                      <div className="w-14 h-14 sm:w-16 sm:h-16 bg-white/20 backdrop-blur-sm rounded-2xl flex items-center justify-center group-hover:scale-110 transition-transform duration-300">
+                        <Activity className="w-7 h-7 sm:w-9 sm:h-9 text-white" />
+                      </div>
+                      <div className="text-center">
+                        <div className="text-3xl sm:text-4xl font-black mb-1">{traineesData.active}</div>
+                        <div className="text-green-100 text-xs sm:text-sm font-semibold">פעילים היום</div>
                       </div>
                     </div>
                   </CardContent>
                 </Card>
 
-                <Card className="bg-gradient-to-br from-orange-500 to-orange-600 border-0 shadow-xl hover:shadow-2xl transition-all duration-300">
-                  <CardContent className="p-3 sm:p-6 text-white">
-                    <div className="flex flex-col sm:flex-row items-center sm:justify-between gap-2">
-                      <AlertTriangle className="w-8 h-8 sm:w-12 sm:h-12 text-orange-100 order-2 sm:order-1" />
-                      <div className="text-center sm:text-right order-1 sm:order-2">
-                        <div className="text-2xl sm:text-3xl font-bold">{traineesData.needsAttention}</div>
-                        <div className="text-orange-100 text-xs sm:text-sm">זקוקים לתשומת לב</div>
+                <Card className="bg-gradient-to-br from-orange-500 via-orange-600 to-red-500 border-0 shadow-2xl hover:shadow-3xl hover:scale-105 transition-all duration-300 group relative overflow-hidden">
+                  <div className="absolute inset-0 bg-gradient-to-br from-orange-400 to-red-500 opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
+                  <CardContent className="p-4 sm:p-6 text-white relative z-10">
+                    <div className="flex flex-col items-center gap-3">
+                      <div className="w-14 h-14 sm:w-16 sm:h-16 bg-white/20 backdrop-blur-sm rounded-2xl flex items-center justify-center group-hover:scale-110 transition-transform duration-300">
+                        <AlertTriangle className="w-7 h-7 sm:w-9 sm:h-9 text-white" />
+                      </div>
+                      <div className="text-center">
+                        <div className="text-3xl sm:text-4xl font-black mb-1">{traineesData.needsAttention}</div>
+                        <div className="text-orange-100 text-xs sm:text-sm font-semibold">זקוקים לתשומת לב</div>
                       </div>
                     </div>
                   </CardContent>
                 </Card>
 
-                <Card className="bg-gradient-to-br from-purple-500 to-purple-600 border-0 shadow-xl hover:shadow-2xl transition-all duration-300">
-                  <CardContent className="p-3 sm:p-6 text-white">
-                    <div className="flex flex-col sm:flex-row items-center sm:justify-between gap-2">
-                      <Award className="w-8 h-8 sm:w-12 sm:h-12 text-purple-100 order-2 sm:order-1" />
-                      <div className="text-center sm:text-right order-1 sm:order-2">
-                        <div className="text-2xl sm:text-3xl font-bold">{traineesData.topPerformers?.length || 0}</div>
-                        <div className="text-purple-100 text-xs sm:text-sm">מתאמנים מצטיינים</div>
+                <Card className="bg-gradient-to-br from-purple-500 via-purple-600 to-pink-500 border-0 shadow-2xl hover:shadow-3xl hover:scale-105 transition-all duration-300 group relative overflow-hidden">
+                  <div className="absolute inset-0 bg-gradient-to-br from-purple-400 to-pink-500 opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
+                  <CardContent className="p-4 sm:p-6 text-white relative z-10">
+                    <div className="flex flex-col items-center gap-3">
+                      <div className="w-14 h-14 sm:w-16 sm:h-16 bg-white/20 backdrop-blur-sm rounded-2xl flex items-center justify-center group-hover:scale-110 transition-transform duration-300">
+                        <Award className="w-7 h-7 sm:w-9 sm:h-9 text-white" />
+                      </div>
+                      <div className="text-center">
+                        <div className="text-3xl sm:text-4xl font-black mb-1">{traineesData.topPerformers?.length || 0}</div>
+                        <div className="text-purple-100 text-xs sm:text-sm font-semibold">מתאמנים מצטיינים</div>
                       </div>
                     </div>
                   </CardContent>
                 </Card>
               </div>
 
-              {/* Main Coach Actions - Mobile Optimized */}
-              <div className="grid gap-4 sm:gap-8">
+              <div className="grid gap-4 sm:gap-6">
                 <Card
                   onClick={() => navigate(createPageUrl('Analytics'))}
-                  className="group bg-white/80 backdrop-blur-sm border-0 shadow-xl hover:shadow-2xl transition-all duration-500 cursor-pointer transform hover:scale-105 overflow-hidden"
+                  className="group glass-morphism border-2 border-blue-100 shadow-xl hover:shadow-3xl transition-all duration-500 cursor-pointer hover:scale-[1.02] active:scale-[0.98] overflow-hidden relative"
                 >
-                  <div className="absolute inset-0 bg-gradient-to-br from-blue-500/5 to-purple-500/5 opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
-                  <CardContent className="p-4 sm:p-8 relative z-10">
-                    <div className="flex flex-col sm:flex-row items-center gap-4 sm:gap-6">
-                      <div className="w-12 h-12 sm:w-16 sm:h-16 bg-gradient-to-br from-blue-500 to-purple-600 rounded-xl sm:rounded-2xl flex items-center justify-center shadow-lg group-hover:scale-110 transition-transform duration-300">
-                        <BarChart3 className="w-6 h-6 sm:w-8 sm:h-8 text-white" />
+                  <div className="absolute inset-0 bg-gradient-to-br from-blue-500/10 via-blue-400/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
+                  <div className="absolute top-0 left-0 w-2 h-full bg-gradient-to-b from-blue-500 to-blue-600 transform scale-y-0 group-hover:scale-y-100 transition-transform duration-500 origin-top"></div>
+                  <CardContent className="p-5 sm:p-8 relative z-10">
+                    <div className="flex flex-col sm:flex-row items-center gap-5 sm:gap-6">
+                      <div className="w-16 h-16 sm:w-20 sm:h-20 bg-gradient-to-br from-blue-500 via-blue-600 to-blue-700 rounded-3xl flex items-center justify-center shadow-2xl group-hover:scale-110 group-hover:rotate-6 transition-all duration-300">
+                        <BarChart3 className="w-8 h-8 sm:w-10 sm:h-10 text-white" />
                       </div>
                       <div className="flex-1 text-center sm:text-right">
-                        <h3 className="text-lg sm:text-2xl font-bold text-gray-800 mb-2">אנליטיקס מתקדם</h3>
-                        <p className="text-gray-600 text-sm sm:text-base mb-4">מעקב מפורט אחר התקדמות המתאמנים שלך</p>
-                        <div className="flex items-center justify-center sm:justify-end text-blue-600 font-medium">
-                          <span>צפה בנתונים</span>
-                          <ChevronRight className="w-5 h-5 mr-2 group-hover:translate-x-1 transition-transform" />
+                        <h3 className="text-xl sm:text-3xl font-black text-gray-800 mb-2 group-hover:text-blue-700 transition-colors">אנליטיקס מתקדם</h3>
+                        <p className="text-gray-600 text-sm sm:text-base mb-4 font-medium">מעקב מפורט אחר התקדמות המתאמנים שלך</p>
+                        <div className="flex items-center justify-center sm:justify-end text-blue-600 font-bold group-hover:gap-2 transition-all">
+                          <span className="text-base">צפה בנתונים</span>
+                          <ChevronRight className="w-5 h-5 mr-2 group-hover:-translate-x-2 transition-transform" />
                         </div>
                       </div>
                     </div>
@@ -501,20 +512,21 @@ export default function Dashboard() {
 
                 <Card
                   onClick={() => navigate(createPageUrl('UserManagement'))}
-                  className="group bg-white/80 backdrop-blur-sm border-0 shadow-xl hover:shadow-2xl transition-all duration-500 cursor-pointer transform hover:scale-105 overflow-hidden"
+                  className="group glass-morphism border-2 border-green-100 shadow-xl hover:shadow-3xl transition-all duration-500 cursor-pointer hover:scale-[1.02] active:scale-[0.98] overflow-hidden relative"
                 >
-                  <div className="absolute inset-0 bg-gradient-to-br from-green-500/5 to-blue-500/5 opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
-                  <CardContent className="p-4 sm:p-8 relative z-10">
-                    <div className="flex flex-col sm:flex-row items-center gap-4 sm:gap-6">
-                      <div className="w-12 h-12 sm:w-16 sm:h-16 bg-gradient-to-br from-green-500 to-blue-600 rounded-xl sm:rounded-2xl flex items-center justify-center shadow-lg group-hover:scale-110 transition-transform duration-300">
-                        <UserPlus className="w-6 h-6 sm:w-8 sm:h-8 text-white" />
+                  <div className="absolute inset-0 bg-gradient-to-br from-green-500/10 via-green-400/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
+                  <div className="absolute top-0 left-0 w-2 h-full bg-gradient-to-b from-green-500 to-emerald-600 transform scale-y-0 group-hover:scale-y-100 transition-transform duration-500 origin-top"></div>
+                  <CardContent className="p-5 sm:p-8 relative z-10">
+                    <div className="flex flex-col sm:flex-row items-center gap-5 sm:gap-6">
+                      <div className="w-16 h-16 sm:w-20 sm:h-20 bg-gradient-to-br from-green-500 via-green-600 to-emerald-600 rounded-3xl flex items-center justify-center shadow-2xl group-hover:scale-110 group-hover:rotate-6 transition-all duration-300">
+                        <UserPlus className="w-8 h-8 sm:w-10 sm:h-10 text-white" />
                       </div>
                       <div className="flex-1 text-center sm:text-right">
-                        <h3 className="text-lg sm:text-2xl font-bold text-gray-800 mb-2">ניהול מתאמנים</h3>
-                        <p className="text-gray-600 text-sm sm:text-base mb-4">הזמן מתאמנים חדשים וערוך פרופילים</p>
-                        <div className="flex items-center justify-center sm:justify-end text-green-600 font-medium">
-                          <span>נהל משתמשים</span>
-                          <ChevronRight className="w-5 h-5 mr-2 group-hover:translate-x-1 transition-transform" />
+                        <h3 className="text-xl sm:text-3xl font-black text-gray-800 mb-2 group-hover:text-green-700 transition-colors">ניהול מתאמנים</h3>
+                        <p className="text-gray-600 text-sm sm:text-base mb-4 font-medium">הזמן מתאמנים חדשים וערוך פרופילים</p>
+                        <div className="flex items-center justify-center sm:justify-end text-green-600 font-bold group-hover:gap-2 transition-all">
+                          <span className="text-base">נהל משתמשים</span>
+                          <ChevronRight className="w-5 h-5 mr-2 group-hover:-translate-x-2 transition-transform" />
                         </div>
                       </div>
                     </div>
@@ -652,56 +664,64 @@ export default function Dashboard() {
                 
               {/* PlanRequestFlow component is removed from here */}
 
-              {/* Today's Progress - Mobile Grid */}
               <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 sm:gap-6">
-                <Card className="bg-gradient-to-br from-orange-500 to-red-500 border-0 shadow-xl hover:shadow-2xl transition-all duration-300">
-                  <CardContent className="p-4 sm:p-6 text-white">
+                <Card className="bg-gradient-to-br from-orange-500 via-red-500 to-pink-500 border-0 shadow-2xl hover:shadow-3xl hover:scale-105 transition-all duration-300 group relative overflow-hidden">
+                  <div className="absolute inset-0 bg-gradient-to-br from-orange-400 to-pink-500 opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
+                  <CardContent className="p-5 sm:p-7 text-white relative z-10">
                     <div className="flex items-center justify-between mb-4">
-                      <Target className="w-8 h-8 sm:w-12 sm:h-12 text-orange-100" />
+                      <div className="w-14 h-14 sm:w-16 sm:h-16 bg-white/20 backdrop-blur-sm rounded-2xl flex items-center justify-center group-hover:scale-110 transition-transform duration-300">
+                        <Target className="w-7 h-7 sm:w-9 sm:h-9 text-white" />
+                      </div>
                       <div className="text-right">
-                        <div className="text-2xl sm:text-3xl font-bold">{todayStats.calories}</div>
-                        <div className="text-orange-100 text-sm">קלוריות היום</div>
+                        <div className="text-3xl sm:text-4xl font-black mb-1">{todayStats.calories}</div>
+                        <div className="text-orange-100 text-sm sm:text-base font-semibold">קלוריות היום</div>
                       </div>
                     </div>
-                    <div className="w-full bg-orange-400/30 rounded-full h-2">
+                    <div className="w-full bg-white/20 rounded-full h-3 shadow-inner overflow-hidden">
                       <div
-                        className="bg-white rounded-full h-2 transition-all duration-500"
+                        className="bg-gradient-to-l from-white to-yellow-100 rounded-full h-3 transition-all duration-500 shadow-lg"
                         style={{ width: `${Math.min((todayStats.calories / (user.daily_calories_goal || 2000)) * 100, 100)}%` }}
                       ></div>
                     </div>
                   </CardContent>
                 </Card>
 
-                <Card className="bg-gradient-to-br from-green-500 to-emerald-500 border-0 shadow-xl hover:shadow-2xl transition-all duration-300">
-                  <CardContent className="p-4 sm:p-6 text-white">
+                <Card className="bg-gradient-to-br from-green-500 via-emerald-500 to-teal-500 border-0 shadow-2xl hover:shadow-3xl hover:scale-105 transition-all duration-300 group relative overflow-hidden">
+                  <div className="absolute inset-0 bg-gradient-to-br from-green-400 to-teal-500 opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
+                  <CardContent className="p-5 sm:p-7 text-white relative z-10">
                     <div className="flex items-center justify-between mb-4">
-                      <TrendingUp className="w-8 h-8 sm:w-12 sm:h-12 text-green-100" />
+                      <div className="w-14 h-14 sm:w-16 sm:h-16 bg-white/20 backdrop-blur-sm rounded-2xl flex items-center justify-center group-hover:scale-110 transition-transform duration-300">
+                        <TrendingUp className="w-7 h-7 sm:w-9 sm:h-9 text-white" />
+                      </div>
                       <div className="text-right">
-                        <div className="text-2xl sm:text-3xl font-bold">{todayStats.protein.toFixed(0)}</div>
-                        <div className="text-green-100 text-sm">גרם חלבון</div>
+                        <div className="text-3xl sm:text-4xl font-black mb-1">{todayStats.protein.toFixed(0)}</div>
+                        <div className="text-green-100 text-sm sm:text-base font-semibold">גרם חלבון</div>
                       </div>
                     </div>
-                    <div className="w-full bg-green-400/30 rounded-full h-2">
+                    <div className="w-full bg-white/20 rounded-full h-3 shadow-inner overflow-hidden">
                       <div
-                        className="bg-white rounded-full h-2 transition-all duration-500"
+                        className="bg-gradient-to-l from-white to-green-100 rounded-full h-3 transition-all duration-500 shadow-lg"
                         style={{ width: `${Math.min((todayStats.protein / (user.daily_protein_goal || 150)) * 100, 100)}%` }}
                       ></div>
                     </div>
                   </CardContent>
                 </Card>
 
-                <Card className="bg-gradient-to-br from-purple-500 to-indigo-500 border-0 shadow-xl hover:shadow-2xl transition-all duration-300 sm:col-span-1">
-                  <CardContent className="p-4 sm:p-6 text-white">
+                <Card className="bg-gradient-to-br from-purple-500 via-blue-500 to-cyan-500 border-0 shadow-2xl hover:shadow-3xl hover:scale-105 transition-all duration-300 group relative overflow-hidden sm:col-span-1">
+                  <div className="absolute inset-0 bg-gradient-to-br from-purple-400 to-cyan-500 opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
+                  <CardContent className="p-5 sm:p-7 text-white relative z-10">
                     <div className="flex items-center justify-between mb-4">
-                      <Star className="w-8 h-8 sm:w-12 sm:h-12 text-purple-100" />
+                      <div className="w-14 h-14 sm:w-16 sm:h-16 bg-white/20 backdrop-blur-sm rounded-2xl flex items-center justify-center group-hover:scale-110 transition-transform duration-300">
+                        <Star className="w-7 h-7 sm:w-9 sm:h-9 text-white animate-pulse" />
+                      </div>
                       <div className="text-right">
-                        <div className="text-2xl sm:text-3xl font-bold">{weeklyProgress}%</div>
-                        <div className="text-purple-100 text-sm">השבוע</div>
+                        <div className="text-3xl sm:text-4xl font-black mb-1">{weeklyProgress}%</div>
+                        <div className="text-purple-100 text-sm sm:text-base font-semibold">השבוע</div>
                       </div>
                     </div>
-                    <div className="w-full bg-purple-400/30 rounded-full h-2">
+                    <div className="w-full bg-white/20 rounded-full h-3 shadow-inner overflow-hidden">
                       <div
-                        className="bg-white rounded-full h-2 transition-all duration-500"
+                        className="bg-gradient-to-l from-white to-purple-100 rounded-full h-3 transition-all duration-500 shadow-lg"
                         style={{ width: `${weeklyProgress}%` }}
                       ></div>
                     </div>

@@ -501,46 +501,67 @@ export default function Layout({ children, currentPageName }) {
   }
 
   return (
-    <div dir="rtl" className="min-h-screen bg-gradient-to-br from-blue-50 to-green-50">
+    <div dir="rtl" className="min-h-screen bg-gradient-to-br from-blue-50 via-white to-green-50 relative overflow-hidden">
+      <div className="fixed inset-0 bg-[url('data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNjAiIGhlaWdodD0iNjAiIHZpZXdCb3g9IjAgMCA2MCA2MCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48ZyBmaWxsPSJub25lIiBmaWxsLXJ1bGU9ImV2ZW5vZGQiPjxnIGZpbGw9IiMzYjgyZjYiIGZpbGwtb3BhY2l0eT0iMC4wMyI+PHBhdGggZD0iTTM2IDE0YzMuMzEgMCA2IDIuNjkgNiA2cy0yLjY5IDYtNiA2LTYtMi42OS02LTYgMi42OS02IDYtNnoiLz48L2c+PC9nPjwvc3ZnPg==')] opacity-40"></div>
+
       <style>{`
-        :root {
-          --primary-blue: #2563eb;
-          --primary-green: #16a34a;
-          --light-blue: #dbeafe;
-          --light-green: #dcfce7;
-          --text-primary: #1f2937;
-          --text-secondary: #6b7280;
+        @keyframes shimmer {
+          0% { background-position: -1000px 0; }
+          100% { background-position: 1000px 0; }
         }
-        
-        * {
-          font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+
+        .shimmer {
+          animation: shimmer 3s infinite;
+          background: linear-gradient(90deg, transparent, rgba(255,255,255,0.3), transparent);
+          background-size: 1000px 100%;
         }
-        
-        .rtl-layout {
-          direction: rtl;
-        }
-        
-        .gradient-bg {
-          background: linear-gradient(135deg, var(--light-blue) 0%, var(--light-green) 100%);
-        }
-        
+
         .glass-effect {
-          backdrop-filter: blur(10px);
-          border: 1px solid rgba(255, 255, 255, 0.2);
+          background: rgba(255, 255, 255, 0.85);
+          backdrop-filter: blur(12px) saturate(180%);
+          -webkit-backdrop-filter: blur(12px) saturate(180%);
+          border: 1px solid rgba(255, 255, 255, 0.3);
+          box-shadow: 0 8px 32px rgba(31, 38, 135, 0.07);
+        }
+
+        .sidebar-item {
+          position: relative;
+          transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .sidebar-item::before {
+          content: '';
+          position: absolute;
+          right: 0;
+          top: 50%;
+          transform: translateY(-50%);
+          width: 3px;
+          height: 0;
+          background: linear-gradient(135deg, #3b82f6 0%, #10b981 100%);
+          border-radius: 2px;
+          transition: height 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .sidebar-item.active::before {
+          height: 60%;
+        }
+
+        .sidebar-item:hover {
+          transform: translateX(-4px);
         }
       `}</style>
       
       <SidebarProvider>
         <div className="min-h-screen flex w-full">
-          <Sidebar side="right" className="border-l border-white/20 bg-white/80 glass-effect">
-            <SidebarHeader className="border-b border-white/20 p-6">
-              <Link to={createPageUrl("Dashboard")} className="flex items-center gap-3">
-                <div className="w-10 h-10 bg-gradient-to-r from-blue-500 to-green-500 rounded-xl flex items-center justify-center shadow-lg">
-                  <Target className="w-6 h-6 text-white" />
+          <Sidebar side="right" className="border-l border-white/20 glass-effect relative z-10">
+            <SidebarHeader className="border-b border-blue-100/50 p-6 bg-gradient-to-b from-blue-50/50 to-transparent">
+              <Link to={createPageUrl("Dashboard")} className="flex items-center gap-3 group">
+                <div className="w-12 h-12 bg-gradient-to-br from-blue-500 via-blue-600 to-green-500 rounded-2xl flex items-center justify-center shadow-lg transform group-hover:scale-110 group-hover:rotate-3 transition-all duration-300">
+                  <Target className="w-7 h-7 text-white" />
                 </div>
                 <div>
-                  <h2 className="font-bold text-xl text-gray-900">Reborn Energy</h2>
-                  <p className="text-sm text-gray-500">מעקב תזונה חכם</p>
+                  <h2 className="font-bold text-2xl bg-gradient-to-l from-blue-600 to-green-600 bg-clip-text text-transparent">Reborn Energy</h2>
+                  <p className="text-sm text-gray-600 font-medium">מעקב תזונה חכם</p>
                 </div>
               </Link>
             </SidebarHeader>
@@ -554,15 +575,26 @@ export default function Layout({ children, currentPageName }) {
                   <SidebarMenu>
                     {filteredItems.map((item) => (
                       <SidebarMenuItem key={item.title}>
-                        <SidebarMenuButton 
-                          asChild 
-                          className={`hover:bg-blue-50 hover:text-blue-700 transition-all duration-200 rounded-xl mb-1 ${
-                            location.pathname === item.url ? 'bg-gradient-to-r from-blue-100 to-green-100 text-blue-700 shadow-sm' : ''
+                        <SidebarMenuButton
+                          asChild
+                          className={`sidebar-item hover:bg-gradient-to-l hover:from-blue-50 hover:to-green-50 hover:text-blue-700 transition-all duration-300 rounded-2xl mb-2 group ${
+                            location.pathname === item.url ? 'bg-gradient-to-l from-blue-100 to-green-100 text-blue-700 shadow-md active' : ''
                           }`}
                         >
-                          <Link to={item.url} className="flex items-center gap-3 px-4 py-3">
-                            <item.icon className="w-5 h-5" />
-                            <span className="font-medium">{item.title}</span>
+                          <Link to={item.url} className="flex items-center gap-4 px-4 py-3.5 relative overflow-hidden">
+                            <div className={`w-10 h-10 rounded-xl flex items-center justify-center transition-all duration-300 ${
+                              location.pathname === item.url
+                                ? 'bg-gradient-to-br from-blue-500 to-green-500 shadow-lg'
+                                : 'bg-gray-100 group-hover:bg-gradient-to-br group-hover:from-blue-400 group-hover:to-green-400'
+                            }`}>
+                              <item.icon className={`w-5 h-5 transition-colors duration-300 ${
+                                location.pathname === item.url ? 'text-white' : 'text-gray-600 group-hover:text-white'
+                              }`} />
+                            </div>
+                            <span className="font-semibold text-[15px]">{item.title}</span>
+                            {location.pathname === item.url && (
+                              <div className="absolute left-0 top-1/2 -translate-y-1/2 w-1 h-8 bg-gradient-to-b from-blue-500 to-green-500 rounded-r-full"></div>
+                            )}
                           </Link>
                         </SidebarMenuButton>
                       </SidebarMenuItem>
@@ -572,24 +604,23 @@ export default function Layout({ children, currentPageName }) {
               </SidebarGroup>
             </SidebarContent>
 
-            <SidebarFooter className="border-t border-white/20 p-4">
-              {/* Show Upgrade to Pro for Free Users (but not for Admin) */}
+            <SidebarFooter className="border-t border-blue-100/50 p-4 bg-gradient-to-t from-blue-50/30 to-transparent">
               {user && !isProPlan && !isAdmin && (
-                  <div className="mb-4">
+                  <div className="mb-4 relative overflow-hidden rounded-2xl">
                       <Link to={createPageUrl("UpgradePlan")}>
-                          <Button className="w-full bg-gradient-to-r from-yellow-400 to-orange-500 text-white font-bold hover:scale-105 transition-transform shadow-lg">
-                              <Star className="w-4 h-4 ml-2" />
-                              שדרג ל-Pro
+                          <Button className="w-full bg-gradient-to-r from-yellow-400 via-orange-500 to-pink-500 text-white font-bold hover:scale-105 active:scale-95 transition-all duration-300 shadow-xl hover:shadow-2xl py-6 relative group overflow-hidden">
+                              <div className="absolute inset-0 bg-gradient-to-r from-yellow-300 via-orange-400 to-pink-400 opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
+                              <Star className="w-5 h-5 ml-2 relative z-10 animate-pulse" />
+                              <span className="relative z-10 text-lg">שדרג ל-Pro</span>
                           </Button>
                       </Link>
                   </div>
               )}
 
-              {/* Show Manage Subscription for Pro Users (but not for Admin) */}
               {user && isProPlan && !isAdmin && (
                 <div className="mb-4">
                     <Link to={createPageUrl("UpgradePlan")}>
-                        <Button variant="outline" className="w-full border-purple-400 text-purple-600 hover:bg-purple-500/20 hover:text-purple-700">
+                        <Button variant="outline" className="w-full border-2 border-blue-200 text-blue-700 hover:bg-blue-50 hover:border-blue-300 transition-all duration-300 font-semibold py-6 rounded-2xl">
                             <Settings className="w-4 h-4 ml-2" />
                             נהל מנוי
                         </Button>
@@ -599,27 +630,28 @@ export default function Layout({ children, currentPageName }) {
 
               {user ? (
                 <div className="space-y-3">
-                  <div className="flex items-center gap-3">
-                    <div className="w-10 h-10 bg-gradient-to-r from-blue-400 to-green-400 rounded-full flex items-center justify-center">
-                      <span className="text-white font-semibold text-sm">
-                        {user.hebrew_name?.[0] || user.full_name?.[0] || 'U'}
-                      </span>
+                  <div className="bg-gradient-to-br from-blue-50 to-green-50 rounded-2xl p-4 border border-blue-100">
+                    <div className="flex items-center gap-3 mb-3">
+                      <div className="w-12 h-12 bg-gradient-to-br from-blue-500 via-blue-600 to-green-500 rounded-full flex items-center justify-center shadow-lg ring-4 ring-blue-100">
+                        <span className="text-white font-bold text-lg">
+                          {user.hebrew_name?.[0] || user.full_name?.[0] || 'U'}
+                        </span>
+                      </div>
+                      <div className="flex-1 min-w-0">
+                        <p className="font-bold text-gray-900 truncate">
+                          {user.hebrew_name || user.full_name || 'משתמש'}
+                        </p>
+                        <p className="text-xs text-gray-600 truncate font-medium">
+                          {isAdmin ? '⭐ מנהל ראשי' : isCoach ? (isProPlan ? '👑 מאמן Pro' : '🎯 מאמן') : (isProPlan ? '💎 מתאמן Pro' : '💪 מתאמן')}
+                        </p>
+                      </div>
+                      <NotificationBell user={user} />
                     </div>
-                    <div className="flex-1 min-w-0">
-                      <p className="font-semibold text-gray-900 text-sm truncate">
-                        {user.hebrew_name || user.full_name || 'משתמש'}
-                      </p>
-                      <p className="text-xs text-gray-500 truncate">
-                        {isAdmin ? 'מנהל ראשי' : isCoach ? (isProPlan ? 'מאמן Pro' : 'מאמן Free') : (isProPlan ? 'מתאמן Pro' : 'מתאמן Free')}
-                      </p>
-                    </div>
-                    {/* Add NotificationBell here */}
-                    <NotificationBell user={user} />
                   </div>
-                  <Button 
+                  <Button
                     onClick={handleLogout}
                     variant="outline"
-                    className="w-full text-red-600 border-red-200 hover:bg-red-50"
+                    className="w-full text-red-600 border-2 border-red-200 hover:bg-red-50 hover:border-red-300 transition-all duration-300 font-semibold py-3 rounded-xl"
                   >
                     <LogOut className="w-4 h-4 ml-2" />
                     התנתקות
@@ -638,13 +670,18 @@ export default function Layout({ children, currentPageName }) {
             </SidebarFooter>
           </Sidebar>
 
-          <main className="flex-1 flex flex-col">
-            <header className="bg-white/80 glass-effect border-b border-white/20 px-6 py-4 lg:hidden">
+          <main className="flex-1 flex flex-col relative z-0">
+            <header className="glass-effect border-b border-white/30 px-4 sm:px-6 py-4 lg:hidden sticky top-0 z-50 backdrop-blur-xl">
               <div className="flex items-center justify-between">
-                <Link to={createPageUrl("Dashboard")} className="text-xl font-bold text-gray-900">Reborn Energy</Link>
+                <Link to={createPageUrl("Dashboard")} className="flex items-center gap-2 group">
+                  <div className="w-10 h-10 bg-gradient-to-br from-blue-500 to-green-500 rounded-xl flex items-center justify-center shadow-lg group-hover:scale-110 transition-transform duration-300">
+                    <Target className="w-6 h-6 text-white" />
+                  </div>
+                  <span className="text-xl font-bold bg-gradient-to-l from-blue-600 to-green-600 bg-clip-text text-transparent">Reborn Energy</span>
+                </Link>
                 <div className="flex items-center gap-2">
                   {user && <NotificationBell user={user} />}
-                  <SidebarTrigger className="hover:bg-gray-100 p-2 rounded-lg transition-colors duration-200" />
+                  <SidebarTrigger className="hover:bg-blue-50 p-2 rounded-xl transition-all duration-200 active:scale-95" />
                 </div>
               </div>
             </header>
