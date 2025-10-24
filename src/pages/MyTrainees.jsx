@@ -126,9 +126,9 @@ export default function MyTrainees() {
 
   if (loading) {
     return (
-      <div className="flex flex-col items-center justify-center min-h-screen">
+      <div className="flex flex-col items-center justify-center min-h-screen bg-gradient-to-br from-blue-50 via-white to-green-50 dark:from-slate-950 dark:via-slate-900 dark:to-slate-950 transition-colors duration-300">
         <Loader2 className="h-12 w-12 animate-spin text-blue-500 mb-4" />
-        <p className="text-gray-600">טוען נתונים...</p>
+        <p className="text-gray-600 dark:text-gray-400">טוען נתונים...</p>
       </div>
     );
   }
@@ -185,15 +185,15 @@ export default function MyTrainees() {
   }
 
   return (
-    <div className="p-4 sm:p-6 lg:p-8 min-h-screen bg-gray-50">
+    <div className="p-4 sm:p-6 lg:p-8 min-h-screen bg-gradient-to-br from-blue-50 via-white to-green-50 dark:from-slate-950 dark:via-slate-900 dark:to-slate-950 transition-colors duration-300">
       <div className="max-w-7xl mx-auto">
         <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-8">
           <div className="mb-4 sm:mb-0">
-            <h1 className="text-3xl font-bold text-gray-900 flex items-center gap-3">
+            <h1 className="text-3xl font-bold text-gray-900 dark:text-white flex items-center gap-3">
               <Users className="w-8 h-8 text-blue-500" />
               המתאמנים שלי
             </h1>
-            <p className="text-gray-600 mt-1">נהל, עקוב ותקשר עם כל המתאמנים שלך ממקום אחד.</p>
+            <p className="text-gray-600 dark:text-gray-400 mt-1">נהל, עקוב ותקשר עם כל המתאמנים שלך ממקום אחד.</p>
           </div>
           <Button onClick={() => navigate(createPageUrl('UserManagement'))}>
             <UserPlus className="w-4 h-4 ml-2" />
@@ -205,10 +205,10 @@ export default function MyTrainees() {
           <TraineeAnalytics trainees={trainees} nutritionLogs={nutritionLogs} />
         )}
 
-        <Card className="bg-white/80 backdrop-blur-sm shadow-lg">
+        <Card className="bg-white/80 dark:bg-slate-800/80 backdrop-blur-sm shadow-lg border-0">
           <CardHeader>
             <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
-              <CardTitle>רשימת מתאמנים ({filteredTrainees.length})</CardTitle>
+              <CardTitle className="dark:text-white">רשימת מתאמנים ({filteredTrainees.length})</CardTitle>
               {trainees.length > 0 && (
                 <div className="relative w-full sm:w-64">
                   <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" />
@@ -226,31 +226,31 @@ export default function MyTrainees() {
             {filteredTrainees.length > 0 ? (
               <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
                 {filteredTrainees.map(trainee => (
-                  <Card key={trainee.id} className="bg-gradient-to-br from-blue-50 to-purple-50 border border-blue-200 hover:shadow-xl transition-all duration-300 hover:scale-[1.02]">
+                  <Card key={trainee.id} className="bg-gradient-to-br from-blue-50 to-green-50 dark:from-slate-800 dark:to-slate-700 border border-blue-200 dark:border-slate-600 hover:shadow-xl transition-all duration-300 hover:scale-[1.02] card-hover">
                     <CardContent className="p-6">
                       {/* Header with Avatar and Name */}
                       <div className="text-center mb-4">
-                        <div className="w-16 h-16 bg-gradient-to-r from-blue-500 to-purple-500 rounded-full flex items-center justify-center text-white font-bold text-xl mx-auto mb-3 shadow-lg">
+                        <div className="w-16 h-16 bg-gradient-to-r from-blue-500 to-green-500 rounded-full flex items-center justify-center text-white font-bold text-xl mx-auto mb-3 shadow-lg">
                           {(trainee.hebrew_name || trainee.full_name || 'U')[0]}
                         </div>
-                        <h3 className="font-bold text-xl text-gray-800">
+                        <h3 className="font-bold text-xl text-gray-800 dark:text-white">
                           {trainee.hebrew_name || trainee.full_name}
                         </h3>
-                        <p className="text-sm text-gray-500 mt-1">
+                        <p className="text-sm text-gray-500 dark:text-gray-400 mt-1">
                           {trainee.email}
                         </p>
                       </div>
 
                       {/* Goal Badge */}
                       <div className="text-center mb-4">
-                        <Badge variant="secondary" className="bg-blue-100 text-blue-800 px-3 py-1">
+                        <Badge variant="secondary" className="bg-blue-100 dark:bg-blue-900/30 text-blue-800 dark:text-blue-300 px-3 py-1">
                           {trainee.goal || 'מטרה כללית'}
                         </Badge>
                       </div>
 
                       {/* Action Button */}
-                      <Button 
-                        className="w-full bg-gradient-to-r from-blue-500 to-purple-500 hover:from-blue-600 hover:to-purple-600 text-white font-medium shadow-lg"
+                      <Button
+                        className="w-full bg-gradient-to-r from-blue-500 to-green-500 hover:from-blue-600 hover:to-green-600 text-white font-medium shadow-lg"
                         onClick={() => navigate(createPageUrl(`TraineeProfile?id=${trainee.id}`))}
                       >
                         <BarChart3 className="w-4 h-4 ml-2" />
