@@ -24,12 +24,19 @@ export default function Login() {
     try {
       const { error } = await signIn(email, password);
       if (error) {
-        setError(error.message);
+        if (error.message?.includes('Invalid login credentials')) {
+          setError('אימייל או סיסמה שגויים');
+        } else if (error.message?.includes('Email not confirmed')) {
+          setError('יש לאמת את כתובת האימייל לפני ההתחברות');
+        } else {
+          setError(error.message || 'אירעה שגיאה בהתחברות');
+        }
       } else {
         navigate('/');
       }
     } catch (err) {
-      setError('אירעה שגיאה בהתחברות');
+      console.error('Login error:', err);
+      setError('אירעה שגיאה בהתחברות. אנא נסה שוב.');
     } finally {
       setLoading(false);
     }
@@ -62,6 +69,7 @@ export default function Login() {
                 onChange={(e) => setEmail(e.target.value)}
                 required
                 disabled={loading}
+                autoComplete="email"
               />
             </div>
 
@@ -75,6 +83,7 @@ export default function Login() {
                 onChange={(e) => setPassword(e.target.value)}
                 required
                 disabled={loading}
+                autoComplete="current-password"
               />
             </div>
 

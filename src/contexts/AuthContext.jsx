@@ -19,15 +19,17 @@ export const AuthProvider = ({ children }) => {
   useEffect(() => {
     checkUser();
 
-    const { data: authListener } = auth.onAuthStateChange(async (event, session) => {
-      if (session?.user) {
-        setUser(session.user);
-        await fetchUserProfile(session.user.id);
-      } else {
-        setUser(null);
-        setProfile(null);
-      }
-      setLoading(false);
+    const { data: authListener } = auth.onAuthStateChange((event, session) => {
+      (async () => {
+        if (session?.user) {
+          setUser(session.user);
+          await fetchUserProfile(session.user.id);
+        } else {
+          setUser(null);
+          setProfile(null);
+        }
+        setLoading(false);
+      })();
     });
 
     return () => {
@@ -41,10 +43,11 @@ export const AuthProvider = ({ children }) => {
       if (session?.user) {
         setUser(session.user);
         await fetchUserProfile(session.user.id);
+      } else {
+        setLoading(false);
       }
     } catch (error) {
       console.error('Error checking user:', error);
-    } finally {
       setLoading(false);
     }
   };
@@ -57,36 +60,66 @@ export const AuthProvider = ({ children }) => {
         .eq('id', userId)
         .maybeSingle();
 
-      if (error) throw error;
-      setProfile(data);
+      if (error) {
+        console.error('Error fetching profile:', error);
+        throw error;
+      }
+
+      if (data) {
+        setProfile(data);
+      } else {
+        console.warn('No profile found for user:', userId);
+      }
     } catch (error) {
       console.error('Error fetching profile:', error);
+      throw error;
     }
   };
 
   const signUp = async (email, password, userData) => {
     try {
       const { data, error } = await auth.signUp(email, password, userData);
-      if (error) throw error;
+      if (error) {
+        console.error('Signup error:', error);
+        return { data: null, error };
+      }
 
-      if (data.user) {
-        const { error: profileError } = await supabase
-          .from('user_profiles')
-          .insert([
-            {
-              id: data.user.id,
-              email: email,
-              full_name: userData.full_name,
-              role: userData.role || 'trainee',
-              coach_id: userData.coach_id || null
-            }
-          ]);
+      if (data?.user) {
+        try {
+          const { error: profileError } = await supabase
+            .from('user_profiles')
+            .insert([
+              {
+                id: data.user.id,
+                email: email,
+                full_name: userData.full_name,
+                role: userData.role || 'trainee',
+                coach_id: userData.coach_id || null
+              }
+            ]);
 
-        if (profileError) throw profileError;
+          if (profileError) {
+            console.error('Profile creation error:', profileError);
+            return {
+              data: null,
+              error: { message: 'נוצר חשבון אך נכשלה יצירת הפרופיל. אנא נסה להתחבר.' }
+            };
+          }
+
+          setUser(data.user);
+          await fetchUserProfile(data.user.id);
+        } catch (profileError) {
+          console.error('Profile creation error:', profileError);
+          return {
+            data: null,
+            error: { message: 'שגיאה ביצירת פרופיל. אנא נסה שוב.' }
+          };
+        }
       }
 
       return { data, error: null };
     } catch (error) {
+      console.error('Signup error:', error);
       return { data: null, error };
     }
   };

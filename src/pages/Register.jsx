@@ -59,12 +59,21 @@ export default function Register() {
       });
 
       if (error) {
-        setError(error.message);
+        if (error.message?.includes('User already registered')) {
+          setError('כתובת האימייל כבר רשומה במערכת');
+        } else if (error.message?.includes('Password')) {
+          setError('הסיסמה חייבת להכיל לפחות 6 תווים');
+        } else if (error.message?.includes('Email')) {
+          setError('כתובת אימייל לא תקינה');
+        } else {
+          setError(error.message || 'אירעה שגיאה בהרשמה');
+        }
       } else {
         navigate('/');
       }
     } catch (err) {
-      setError('אירעה שגיאה בהרשמה');
+      console.error('Registration error:', err);
+      setError('אירעה שגיאה בהרשמה. אנא נסה שוב.');
     } finally {
       setLoading(false);
     }
@@ -112,6 +121,7 @@ export default function Register() {
                 onChange={handleChange}
                 required
                 disabled={loading}
+                autoComplete="email"
               />
             </div>
 
@@ -126,6 +136,7 @@ export default function Register() {
                 onChange={handleChange}
                 required
                 disabled={loading}
+                autoComplete="new-password"
               />
             </div>
 
@@ -140,6 +151,7 @@ export default function Register() {
                 onChange={handleChange}
                 required
                 disabled={loading}
+                autoComplete="new-password"
               />
             </div>
 
