@@ -52,6 +52,41 @@ export const AuthProvider = ({ children }) => {
     }
   };
 
+  const createProfileForUser = async (userId) => {
+    try {
+      const { data: { user } } = await supabase.auth.getUser();
+      if (!user) {
+        console.error('No authenticated user found');
+        setLoading(false);
+        return;
+      }
+
+      const { data, error } = await supabase
+        .from('user_profiles')
+        .insert([{
+          id: userId,
+          email: user.email,
+          full_name: user.user_metadata?.full_name || user.user_metadata?.name || '',
+          role: 'trainee'
+        }])
+        .select()
+        .maybeSingle();
+
+      if (error) {
+        console.error('Error creating profile:', error);
+        setProfile(null);
+      } else if (data) {
+        console.log('Profile created successfully:', data);
+        setProfile(data);
+      }
+    } catch (error) {
+      console.error('Error in createProfileForUser:', error);
+      setProfile(null);
+    } finally {
+      setLoading(false);
+    }
+  };
+
   const fetchUserProfile = async (userId) => {
     try {
       const { data, error } = await supabase
@@ -62,17 +97,22 @@ export const AuthProvider = ({ children }) => {
 
       if (error) {
         console.error('Error fetching profile:', error);
-        throw error;
+        setProfile(null);
+        setLoading(false);
+        return;
       }
 
       if (data) {
         setProfile(data);
+        setLoading(false);
       } else {
         console.warn('No profile found for user:', userId);
+        await createProfileForUser(userId);
       }
     } catch (error) {
       console.error('Error fetching profile:', error);
-      throw error;
+      setProfile(null);
+      setLoading(false);
     }
   };
 
@@ -85,36 +125,8 @@ export const AuthProvider = ({ children }) => {
       }
 
       if (data?.user) {
-        try {
-          const { error: profileError } = await supabase
-            .from('user_profiles')
-            .insert([
-              {
-                id: data.user.id,
-                email: email,
-                full_name: userData.full_name,
-                role: userData.role || 'trainee',
-                coach_id: userData.coach_id || null
-              }
-            ]);
-
-          if (profileError) {
-            console.error('Profile creation error:', profileError);
-            return {
-              data: null,
-              error: { message: 'נוצר חשבון אך נכשלה יצירת הפרופיל. אנא נסה להתחבר.' }
-            };
-          }
-
-          setUser(data.user);
-          await fetchUserProfile(data.user.id);
-        } catch (profileError) {
-          console.error('Profile creation error:', profileError);
-          return {
-            data: null,
-            error: { message: 'שגיאה ביצירת פרופיל. אנא נסה שוב.' }
-          };
-        }
+        setUser(data.user);
+        await fetchUserProfile(data.user.id);
       }
 
       return { data, error: null };

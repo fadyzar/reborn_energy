@@ -22,6 +22,28 @@ const createEntity = (tableName) => ({
     return { data: data || [], error };
   },
 
+  filter: async (filters = {}, orderBy = null, limit = null) => {
+    let query = supabase.from(tableName).select('*');
+
+    Object.entries(filters).forEach(([key, value]) => {
+      query = query.eq(key, value);
+    });
+
+    if (orderBy) {
+      const isDescending = orderBy.startsWith('-');
+      const field = isDescending ? orderBy.substring(1) : orderBy;
+      query = query.order(field, { ascending: !isDescending });
+    }
+
+    if (limit) {
+      query = query.limit(limit);
+    }
+
+    const { data, error } = await query;
+    if (error) throw error;
+    return data || [];
+  },
+
   getById: async (id) => {
     const { data, error } = await supabase
       .from(tableName)
@@ -87,6 +109,46 @@ export const User = {
 
     const { data, error } = await query;
     return { data: data || [], error };
+  },
+
+  filter: async (filters = {}, orderBy = null, limit = null) => {
+    let query = supabase.from('user_profiles').select('*');
+
+    Object.entries(filters).forEach(([key, value]) => {
+      query = query.eq(key, value);
+    });
+
+    if (orderBy) {
+      const isDescending = orderBy.startsWith('-');
+      const field = isDescending ? orderBy.substring(1) : orderBy;
+      query = query.order(field, { ascending: !isDescending });
+    }
+
+    if (limit) {
+      query = query.limit(limit);
+    }
+
+    const { data, error } = await query;
+    if (error) throw error;
+    return data || [];
+  },
+
+  me: async () => {
+    const { data: { user }, error: authError } = await supabase.auth.getUser();
+    if (authError || !user) {
+      throw new Error('Not authenticated');
+    }
+
+    const { data, error } = await supabase
+      .from('user_profiles')
+      .select('*')
+      .eq('id', user.id)
+      .maybeSingle();
+
+    if (error) throw error;
+    if (!data) throw new Error('Profile not found');
+
+    return data;
   },
 
   getById: async (id) => {
