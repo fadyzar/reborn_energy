@@ -552,14 +552,15 @@ export default function Layout({ children, currentPageName }) {
       <SidebarProvider>
         <div className="min-h-screen flex w-full">
           <Sidebar side="right" className="border-l-2 border-white/30 dark:border-slate-700/50 glass-effect relative z-10">
-            <SidebarHeader className="border-b-2 border-blue-100/60 dark:border-slate-700/50 p-6 bg-gradient-to-b from-blue-50/60 dark:from-slate-800/60 to-transparent backdrop-blur-sm">
-              <Link to={createPageUrl("Dashboard")} className="flex items-center gap-3 group">
-                <div className="w-14 h-14 bg-gradient-to-br from-blue-500 via-blue-600 to-teal-500 rounded-3xl flex items-center justify-center shadow-xl transform group-hover:scale-110 group-hover:rotate-6 transition-all duration-500 sidebar-icon-glow">
-                  <Target className="w-7 h-7 text-white" />
+            <SidebarHeader className="border-b-2 border-white/20 dark:border-slate-700/50 p-6 gradient-bg-premium backdrop-blur-xl relative overflow-hidden">
+              <div className="absolute inset-0 shine-effect opacity-30"></div>
+              <Link to={createPageUrl("Dashboard")} className="flex items-center gap-3 group relative z-10">
+                <div className="w-16 h-16 gradient-bg-sunset rounded-3xl flex items-center justify-center shadow-2xl transform group-hover:scale-110 group-hover:rotate-12 transition-all duration-700 neon-glow">
+                  <Target className="w-8 h-8 text-white drop-shadow-2xl" />
                 </div>
                 <div>
-                  <h2 className="font-black text-2xl bg-gradient-to-l from-blue-600 via-blue-700 to-teal-600 bg-clip-text text-transparent">Reborn Energy</h2>
-                  <p className="text-sm text-gray-600 dark:text-gray-400 font-semibold">מעקב תזונה חכם</p>
+                  <h2 className="font-black text-2xl text-white drop-shadow-lg">Reborn Energy</h2>
+                  <p className="text-sm text-white/80 font-bold drop-shadow-md">מעקב תזונה חכם</p>
                 </div>
               </Link>
             </SidebarHeader>
@@ -604,12 +605,12 @@ export default function Layout({ children, currentPageName }) {
 
             <SidebarFooter className="border-t-2 border-blue-100/60 dark:border-slate-700/50 p-4 bg-gradient-to-t from-blue-50/40 dark:from-slate-800/40 to-transparent backdrop-blur-sm">
               {user && !isProPlan && !isAdmin && (
-                  <div className="mb-4 relative overflow-hidden rounded-2xl animate-pulse-slow">
+                  <div className="mb-4 relative overflow-hidden rounded-3xl">
                       <Link to={createPageUrl("UpgradePlan")}>
-                          <Button className="w-full bg-gradient-to-r from-yellow-400 via-orange-500 to-pink-500 text-white font-black hover:scale-105 active:scale-95 transition-all duration-400 shadow-2xl hover:shadow-3xl py-7 text-lg relative group overflow-hidden">
-                              <div className="absolute inset-0 bg-gradient-to-r from-yellow-300 via-orange-400 to-pink-400 opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
-                              <Star className="w-6 h-6 ml-2 relative z-10 animate-spin" style={{animationDuration: '3s'}} />
-                              <span className="relative z-10 text-xl">שדרג ל-Pro</span>
+                          <Button className="w-full gradient-bg-premium button-hover text-white font-black py-8 text-xl relative group overflow-hidden neon-glow shine-effect border-0">
+                              <div className="absolute inset-0 bg-gradient-to-r from-purple-400 via-pink-400 to-blue-400 opacity-0 group-hover:opacity-50 transition-opacity duration-500"></div>
+                              <Star className="w-7 h-7 ml-2 relative z-10 animate-spin drop-shadow-2xl" style={{animationDuration: '3s'}} />
+                              <span className="relative z-10 text-2xl drop-shadow-lg">שדרג ל-Pro</span>
                           </Button>
                       </Link>
                   </div>

@@ -250,6 +250,17 @@
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
     background-clip: text;
+    animation: shimmer 3s linear infinite;
+    background-size: 200% 100%;
+  }
+
+  .gradient-text-premium {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 25%, #f093fb 50%, #4facfe 75%, #00f2fe 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    animation: shimmer 4s linear infinite;
+    background-size: 200% 100%;
   }
 
   .gradient-bg-primary {
@@ -262,6 +273,30 @@
 
   .gradient-bg-warm {
     background: linear-gradient(135deg, #f59e0b 0%, #ef4444 50%, #ec4899 100%);
+  }
+
+  .gradient-bg-premium {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 25%, #f093fb 50%, #4facfe 75%, #00f2fe 100%);
+    background-size: 200% 200%;
+    animation: gradientShift 8s ease infinite;
+  }
+
+  .gradient-bg-sunset {
+    background: linear-gradient(135deg, #fa709a 0%, #fee140 50%, #30cfd0 100%);
+    background-size: 200% 200%;
+    animation: gradientShift 10s ease infinite;
+  }
+
+  .gradient-bg-ocean {
+    background: linear-gradient(135deg, #2e3192 0%, #1bffff 50%, #00d4ff 100%);
+    background-size: 200% 200%;
+    animation: gradientShift 12s ease infinite;
+  }
+
+  @keyframes gradientShift {
+    0% { background-position: 0% 50%; }
+    50% { background-position: 100% 50%; }
+    100% { background-position: 0% 50%; }
   }
 
   .shadow-glow {
@@ -308,15 +343,103 @@
 
   .button-hover {
     transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    position: relative;
+    overflow: hidden;
+  }
+
+  .button-hover::before {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 0;
+    height: 0;
+    border-radius: 50%;
+    background: rgba(255, 255, 255, 0.3);
+    transform: translate(-50%, -50%);
+    transition: width 0.6s, height 0.6s;
+  }
+
+  .button-hover:hover::before {
+    width: 300px;
+    height: 300px;
   }
 
   .button-hover:hover {
-    transform: translateY(-2px);
-    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.15);
+    transform: translateY(-2px) scale(1.05);
+    box-shadow: 0 15px 35px rgba(0, 0, 0, 0.2), 0 5px 15px rgba(0, 0, 0, 0.12);
   }
 
   .button-hover:active {
-    transform: translateY(0);
+    transform: translateY(0) scale(0.98);
     box-shadow: 0 5px 10px rgba(0, 0, 0, 0.1);
+  }
+
+  .neon-glow {
+    box-shadow: 0 0 10px rgba(59, 130, 246, 0.5),
+                0 0 20px rgba(59, 130, 246, 0.4),
+                0 0 30px rgba(59, 130, 246, 0.3),
+                0 0 40px rgba(59, 130, 246, 0.2);
+    animation: neonPulse 2s ease-in-out infinite;
+  }
+
+  @keyframes neonPulse {
+    0%, 100% {
+      box-shadow: 0 0 10px rgba(59, 130, 246, 0.5),
+                  0 0 20px rgba(59, 130, 246, 0.4),
+                  0 0 30px rgba(59, 130, 246, 0.3);
+    }
+    50% {
+      box-shadow: 0 0 15px rgba(59, 130, 246, 0.7),
+                  0 0 30px rgba(59, 130, 246, 0.6),
+                  0 0 45px rgba(59, 130, 246, 0.5);
+    }
+  }
+
+  .morphism-card {
+    background: rgba(255, 255, 255, 0.1);
+    backdrop-filter: blur(30px) saturate(180%);
+    -webkit-backdrop-filter: blur(30px) saturate(180%);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1),
+                inset 0 1px 0 rgba(255, 255, 255, 0.3);
+  }
+
+  .dark .morphism-card {
+    background: rgba(30, 41, 59, 0.4);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.4),
+                inset 0 1px 0 rgba(255, 255, 255, 0.1);
+  }
+
+  .shine-effect {
+    position: relative;
+    overflow: hidden;
+  }
+
+  .shine-effect::after {
+    content: '';
+    position: absolute;
+    top: -50%;
+    left: -50%;
+    width: 200%;
+    height: 200%;
+    background: linear-gradient(
+      45deg,
+      transparent 30%,
+      rgba(255, 255, 255, 0.3) 50%,
+      transparent 70%
+    );
+    transform: rotate(45deg);
+    animation: shine 3s infinite;
+  }
+
+  @keyframes shine {
+    0% {
+      transform: translateX(-100%) translateY(-100%) rotate(45deg);
+    }
+    100% {
+      transform: translateX(100%) translateY(100%) rotate(45deg);
+    }
   }
 }
