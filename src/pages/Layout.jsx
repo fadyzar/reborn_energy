@@ -21,12 +21,11 @@ import {
 import { Button } from "@/components/ui/button";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { Badge } from "@/components/ui/badge";
-import { User as UserEntity } from "@/api/entities"; // Renamed to avoid conflict with lucide-react icon
-import { base44 } from "@/api/base44Client";
-import { Notification } from "@/api/entities"; // Import Notification entity
+import { User as UserEntity, Notification } from "@/api/entities";
+import { useAuth } from "@/contexts/AuthContext";
 import { formatDistanceToNow } from "date-fns";
 import { he } from "date-fns/locale";
-import { createCoachNotification } from '@/components/lib/notifications'; // ייבוא הפונקציה החדשה
+import { createCoachNotification } from '@/components/lib/notifications';
 
 const navigationItems = [
   {
@@ -163,14 +162,18 @@ function NotificationBell({ user }) {
 
   useEffect(() => {
     if (!user) return;
-    
+
     const fetchNotifications = async () => {
       try {
-        const userNotifications = await base44.entities.Notification.filter({ user_id: user.id }, '-created_date', 20);
-        setNotifications(userNotifications);
-        setUnreadCount(userNotifications.filter(n => !n.is_read).length);
+        const { data: userNotifications, error } = await Notification.getAll({
+          filter: { user_id: user.id },
+          orderBy: { field: 'created_at', ascending: false },
+          limit: 20
+        });
+        if (error) throw error;
+        setNotifications(userNotifications || []);
+        setUnreadCount(userNotifications?.filter(n => !n.is_read).length || 0);
       } catch (error) {
-        // Avoid spamming logs for rate limit errors, which are expected if tab is open for a long time
         if (error.message && !error.message.includes('429')) {
           console.error("Error fetching notifications:", error);
         }
@@ -178,14 +181,14 @@ function NotificationBell({ user }) {
     };
 
     fetchNotifications();
-    // Increase interval to 3 minutes (180000ms) to avoid rate limiting
-    const interval = setInterval(fetchNotifications, 180000); 
+    const interval = setInterval(fetchNotifications, 180000);
     return () => clearInterval(interval);
   }, [user]);
 
   const markAsRead = async (notificationId) => {
     try {
-      await base44.entities.Notification.update(notificationId, { is_read: true });
+      const { error } = await Notification.update(notificationId, { is_read: true });
+      if (error) throw error;
       setNotifications(notifications.map(n => n.id === notificationId ? { ...n, is_read: true } : n));
       setUnreadCount(prev => Math.max(0, prev - 1));
     } catch (error) {
@@ -197,7 +200,8 @@ function NotificationBell({ user }) {
     try {
       const unreadIds = notifications.filter(n => !n.is_read).map(n => n.id);
       for (const id of unreadIds) {
-        await base44.entities.Notification.update(id, { is_read: true });
+        const { error } = await Notification.update(id, { is_read: true });
+        if (error) throw error;
       }
       setNotifications(notifications.map(n => ({...n, is_read: true})));
       setUnreadCount(0);
@@ -370,70 +374,62 @@ function NotificationBell({ user }) {
 
 export default function Layout({ children, currentPageName }) {
   const location = useLocation();
+  const { user: authUser, profile, loading: authLoading } = useAuth();
   const [user, setUser] = React.useState(null);
   const [loading, setLoading] = React.useState(true);
 
   React.useEffect(() => {
-    loadUser();
-  }, []);
+    if (!authLoading && profile) {
+      loadUser();
+    }
+  }, [authLoading, profile]);
 
   const loadUser = async () => {
     try {
-      let currentUser = await UserEntity.me(); // Use UserEntity
+      let currentUser = profile;
       console.log("[Layout] Current user loaded:", currentUser);
-      
-      // בדוק אם יש coach_id ב-URL עבור משתמש חדש או עדכון שיוך
+
       const urlParams = new URLSearchParams(window.location.search);
       const coachIdFromUrl = urlParams.get('coach_id');
-      
+
       console.log("[Layout] Coach ID from URL:", coachIdFromUrl);
       console.log("[Layout] Current user coach_id:", currentUser.coach_id);
-      console.log("[Layout] Is coach:", currentUser.is_coach);
+      console.log("[Layout] User role:", currentUser.role);
 
-      // שייך למאמן אם:
-      // 1. יש coach_id בURL
-      // 2. המשתמש אינו מאמן
-      // 3. והמשתמש עדיין לא משויך למאמן זה (או בכלל לא משויך)
-      if (coachIdFromUrl && !currentUser.is_coach && currentUser.coach_id !== coachIdFromUrl) {
+      if (coachIdFromUrl && currentUser.role !== 'coach' && currentUser.coach_id !== coachIdFromUrl) {
         console.log("[Layout] Attempting to assign user to coach:", coachIdFromUrl);
-        
+
         try {
-          await UserEntity.updateMyUserData({ // Use UserEntity
-            coach_id: coachIdFromUrl,
-            is_coach: false
+          const { error } = await UserEntity.update(currentUser.id, {
+            coach_id: coachIdFromUrl
           });
-          
+          if (error) throw error;
+
           console.log("[Layout] User successfully assigned to coach");
-          currentUser = await UserEntity.me(); // Re-fetch to get the updated user data // Use UserEntity
-          console.log("[Layout] Updated user data:", currentUser);
-          
-          // יצירת התראה למאמן על מתאמן חדש
+          const { data: updatedUser } = await UserEntity.getById(currentUser.id);
+          if (updatedUser) {
+            currentUser = updatedUser;
+            console.log("[Layout] Updated user data:", currentUser);
+          }
+
           try {
             await createCoachNotification(
               currentUser,
               "מתאמן חדש הצטרף!",
-              `${currentUser.hebrew_name || currentUser.full_name} הצטרף לקהילה שלך!`,
+              `${currentUser.full_name} הצטרף לקהילה שלך!`,
               "new_trainee"
             );
             console.log("[Layout] Notification sent to coach");
           } catch (notificationError) {
             console.error("[Layout] Error sending notification:", notificationError);
           }
-          
-          // הסר את הפרמטר מה-URL
+
           window.history.replaceState({}, document.title, window.location.pathname);
           console.log("[Layout] URL parameter removed");
-          
+
         } catch (updateError) {
           console.error("[Layout] Error updating user data:", updateError);
         }
-      } else {
-        console.log("[Layout] No assignment needed:", {
-          hasCoachId: !!coachIdFromUrl,
-          isCoach: currentUser.is_coach,
-          currentCoachId: currentUser.coach_id,
-          sameCoach: currentUser.coach_id === coachIdFromUrl
-        });
       }
 
       setUser(currentUser);
@@ -444,10 +440,12 @@ export default function Layout({ children, currentPageName }) {
     setLoading(false);
   };
 
+  const { signOut } = useAuth();
+
   const handleLogout = async () => {
     try {
-      await UserEntity.logout(); // Use UserEntity
-      window.location.reload(); // Refresh the page to reset state
+      await signOut();
+      window.location.href = '/login';
     } catch (error) {
       console.error("Error logging out:", error);
     }
@@ -455,7 +453,7 @@ export default function Layout({ children, currentPageName }) {
 
   const isProPlan = user?.subscription_plan === 'pro';
   const isAdmin = user?.role === 'admin';
-  const isCoach = user?.is_coach; // Define isCoach here
+  const isCoach = user?.role === 'coach';
 
   const filteredItems = navigationItems.filter(item => {
     if (!user) return false;

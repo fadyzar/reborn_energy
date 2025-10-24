@@ -44,6 +44,12 @@ import CoachAvatarHub from "./CoachAvatarHub";
 
 import BusinessSettingsPage from "./BusinessSettingsPage";
 
+import Login from "./Login";
+
+import Register from "./Register";
+
+import ProtectedRoute from "@/components/auth/ProtectedRoute";
+
 import { BrowserRouter as Router, Route, Routes, useLocation } from 'react-router-dom';
 
 const PAGES = {
@@ -111,60 +117,196 @@ function _getCurrentPage(url) {
 function PagesContent() {
     const location = useLocation();
     const currentPage = _getCurrentPage(location.pathname);
-    
+
     return (
-        <Layout currentPageName={currentPage}>
-            <Routes>            
-                
-                    <Route path="/" element={<Dashboard />} />
-                
-                
-                <Route path="/Dashboard" element={<Dashboard />} />
-                
-                <Route path="/DailyTracking" element={<DailyTracking />} />
-                
-                <Route path="/Calendar" element={<Calendar />} />
-                
-                <Route path="/BodyMetrics" element={<BodyMetrics />} />
-                
-                <Route path="/Analytics" element={<Analytics />} />
-                
-                <Route path="/UserManagement" element={<UserManagement />} />
-                
-                <Route path="/Home" element={<Home />} />
-                
-                <Route path="/CoachDashboard" element={<CoachDashboard />} />
-                
-                <Route path="/UpgradePlan" element={<UpgradePlan />} />
-                
-                <Route path="/Recipes" element={<Recipes />} />
-                
-                <Route path="/PersonalAnalytics" element={<PersonalAnalytics />} />
-                
-                <Route path="/CommandCenter" element={<CommandCenter />} />
-                
-                <Route path="/Community" element={<Community />} />
-                
-                <Route path="/MyTrainees" element={<MyTrainees />} />
-                
-                <Route path="/TraineeProfile" element={<TraineeProfile />} />
-                
-                <Route path="/PaymentSettings" element={<PaymentSettings />} />
-                
-                <Route path="/GroupManagement" element={<GroupManagement />} />
-                
-                <Route path="/AvatarHub" element={<AvatarHub />} />
-                
-                <Route path="/AvatarLeague" element={<AvatarLeague />} />
-                
-                <Route path="/WorkoutLogPage" element={<WorkoutLogPage />} />
-                
-                <Route path="/CoachAvatarHub" element={<CoachAvatarHub />} />
-                
-                <Route path="/BusinessSettingsPage" element={<BusinessSettingsPage />} />
-                
-            </Routes>
-        </Layout>
+        <Routes>
+            <Route path="/login" element={<Login />} />
+            <Route path="/register" element={<Register />} />
+
+            <Route path="/" element={
+                <ProtectedRoute>
+                    <Layout currentPageName={currentPage}>
+                        <Dashboard />
+                    </Layout>
+                </ProtectedRoute>
+            } />
+
+            <Route path="/Dashboard" element={
+                <ProtectedRoute>
+                    <Layout currentPageName={currentPage}>
+                        <Dashboard />
+                    </Layout>
+                </ProtectedRoute>
+            } />
+
+            <Route path="/DailyTracking" element={
+                <ProtectedRoute>
+                    <Layout currentPageName={currentPage}>
+                        <DailyTracking />
+                    </Layout>
+                </ProtectedRoute>
+            } />
+
+            <Route path="/Calendar" element={
+                <ProtectedRoute>
+                    <Layout currentPageName={currentPage}>
+                        <Calendar />
+                    </Layout>
+                </ProtectedRoute>
+            } />
+
+            <Route path="/BodyMetrics" element={
+                <ProtectedRoute>
+                    <Layout currentPageName={currentPage}>
+                        <BodyMetrics />
+                    </Layout>
+                </ProtectedRoute>
+            } />
+
+            <Route path="/Analytics" element={
+                <ProtectedRoute>
+                    <Layout currentPageName={currentPage}>
+                        <Analytics />
+                    </Layout>
+                </ProtectedRoute>
+            } />
+
+            <Route path="/UserManagement" element={
+                <ProtectedRoute>
+                    <Layout currentPageName={currentPage}>
+                        <UserManagement />
+                    </Layout>
+                </ProtectedRoute>
+            } />
+
+            <Route path="/Home" element={
+                <ProtectedRoute>
+                    <Layout currentPageName={currentPage}>
+                        <Home />
+                    </Layout>
+                </ProtectedRoute>
+            } />
+
+            <Route path="/CoachDashboard" element={
+                <ProtectedRoute>
+                    <Layout currentPageName={currentPage}>
+                        <CoachDashboard />
+                    </Layout>
+                </ProtectedRoute>
+            } />
+
+            <Route path="/UpgradePlan" element={
+                <ProtectedRoute>
+                    <Layout currentPageName={currentPage}>
+                        <UpgradePlan />
+                    </Layout>
+                </ProtectedRoute>
+            } />
+
+            <Route path="/Recipes" element={
+                <ProtectedRoute>
+                    <Layout currentPageName={currentPage}>
+                        <Recipes />
+                    </Layout>
+                </ProtectedRoute>
+            } />
+
+            <Route path="/PersonalAnalytics" element={
+                <ProtectedRoute>
+                    <Layout currentPageName={currentPage}>
+                        <PersonalAnalytics />
+                    </Layout>
+                </ProtectedRoute>
+            } />
+
+            <Route path="/CommandCenter" element={
+                <ProtectedRoute>
+                    <Layout currentPageName={currentPage}>
+                        <CommandCenter />
+                    </Layout>
+                </ProtectedRoute>
+            } />
+
+            <Route path="/Community" element={
+                <ProtectedRoute>
+                    <Layout currentPageName={currentPage}>
+                        <Community />
+                    </Layout>
+                </ProtectedRoute>
+            } />
+
+            <Route path="/MyTrainees" element={
+                <ProtectedRoute>
+                    <Layout currentPageName={currentPage}>
+                        <MyTrainees />
+                    </Layout>
+                </ProtectedRoute>
+            } />
+
+            <Route path="/TraineeProfile" element={
+                <ProtectedRoute>
+                    <Layout currentPageName={currentPage}>
+                        <TraineeProfile />
+                    </Layout>
+                </ProtectedRoute>
+            } />
+
+            <Route path="/PaymentSettings" element={
+                <ProtectedRoute>
+                    <Layout currentPageName={currentPage}>
+                        <PaymentSettings />
+                    </Layout>
+                </ProtectedRoute>
+            } />
+
+            <Route path="/GroupManagement" element={
+                <ProtectedRoute>
+                    <Layout currentPageName={currentPage}>
+                        <GroupManagement />
+                    </Layout>
+                </ProtectedRoute>
+            } />
+
+            <Route path="/AvatarHub" element={
+                <ProtectedRoute>
+                    <Layout currentPageName={currentPage}>
+                        <AvatarHub />
+                    </Layout>
+                </ProtectedRoute>
+            } />
+
+            <Route path="/AvatarLeague" element={
+                <ProtectedRoute>
+                    <Layout currentPageName={currentPage}>
+                        <AvatarLeague />
+                    </Layout>
+                </ProtectedRoute>
+            } />
+
+            <Route path="/WorkoutLogPage" element={
+                <ProtectedRoute>
+                    <Layout currentPageName={currentPage}>
+                        <WorkoutLogPage />
+                    </Layout>
+                </ProtectedRoute>
+            } />
+
+            <Route path="/CoachAvatarHub" element={
+                <ProtectedRoute>
+                    <Layout currentPageName={currentPage}>
+                        <CoachAvatarHub />
+                    </Layout>
+                </ProtectedRoute>
+            } />
+
+            <Route path="/BusinessSettingsPage" element={
+                <ProtectedRoute>
+                    <Layout currentPageName={currentPage}>
+                        <BusinessSettingsPage />
+                    </Layout>
+                </ProtectedRoute>
+            } />
+        </Routes>
     );
 }
 

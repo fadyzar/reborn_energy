@@ -35,7 +35,6 @@ import { format, subDays, startOfWeek, endOfWeek } from "date-fns";
 import { he } from "date-fns/locale";
 import { Link } from "react-router-dom";
 import { createPageUrl } from "@/utils";
-import { base44 } from "@/api/base44Client";
 
 import TraineeCard from "../components/coach/TraineeCard";
 import PerformanceHeatmap from "../components/coach/PerformanceHeatmap";
