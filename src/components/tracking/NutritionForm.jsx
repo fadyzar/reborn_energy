@@ -7,6 +7,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { UploadFile } from "@/api/integrations";
 import { Upload, Save, X, Loader2 } from "lucide-react";
+import FoodSearch from './FoodSearch';
 
 const MEAL_TYPES = [
   "ארוחת בוקר",
@@ -98,14 +99,28 @@ export default function NutritionForm({ log, onSubmit, onCancel }) {
               </Select>
             </div>
 
-            <div className="space-y-2">
+            <div className="space-y-2 md:col-span-2">
               <Label htmlFor="food_name">שם המזון</Label>
+              <FoodSearch
+                onSelectFood={(food) => {
+                  setFormData(prev => ({
+                    ...prev,
+                    food_name: food.name_he,
+                    calories: food.calories,
+                    protein: food.protein,
+                    carbs: food.carbs,
+                    fat: food.fats,
+                    quantity: food.serving_size
+                  }));
+                }}
+              />
               <Input
                 id="food_name"
                 value={formData.food_name}
                 onChange={(e) => handleInputChange('food_name', e.target.value)}
-                placeholder="לדוגמה: עוף בגריל"
+                placeholder="או הקלד ידנית..."
                 required
+                className="mt-2"
               />
             </div>
           </div>
